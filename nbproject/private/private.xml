@@ -3,17 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/aborbon/Dropbox/Tecnologico/IngenieriaEnComputacion/2019I/AnalisisAlgoritmos/Proyecto2/SpellsDeck/src/utils/IObservable.java</file>
-            <file>file:/C:/Users/aborbon/Dropbox/Tecnologico/IngenieriaEnComputacion/2019I/AnalisisAlgoritmos/Proyecto2/SpellsDeck/src/spellsnet/SpellsComms.java</file>
-            <file>file:/C:/Users/aborbon/Dropbox/Tecnologico/IngenieriaEnComputacion/2019I/AnalisisAlgoritmos/Proyecto2/SpellsDeck/src/utils/IObserver.java</file>
-            <file>file:/C:/Users/aborbon/Dropbox/Tecnologico/IngenieriaEnComputacion/2019I/AnalisisAlgoritmos/Proyecto2/SpellsDeck/src/spellsdeck/SpellsDeck.java</file>
-            <file>file:/C:/Users/aborbon/Dropbox/Tecnologico/IngenieriaEnComputacion/2019I/AnalisisAlgoritmos/Proyecto2/SpellsDeck/src/utils/Constants.java</file>
-            <file>file:/C:/Users/aborbon/Dropbox/Tecnologico/IngenieriaEnComputacion/2019I/AnalisisAlgoritmos/Proyecto2/SpellsDeck/src/utils/Logger.java</file>
-            <file>file:/C:/Users/aborbon/Dropbox/Tecnologico/IngenieriaEnComputacion/2019I/AnalisisAlgoritmos/Proyecto2/SpellsDeck/src/utils/Observable.java</file>
-            <file>file:/C:/Users/aborbon/Dropbox/Tecnologico/IngenieriaEnComputacion/2019I/AnalisisAlgoritmos/Proyecto2/SpellsDeck/src/spellsnet/MessageNet.java</file>
-            <file>file:/C:/Users/aborbon/Dropbox/Tecnologico/IngenieriaEnComputacion/2019I/AnalisisAlgoritmos/Proyecto2/SpellsDeck/src/net/ServerNet.java</file>
-            <file>file:/C:/Users/aborbon/Dropbox/Tecnologico/IngenieriaEnComputacion/2019I/AnalisisAlgoritmos/Proyecto2/SpellsDeck/src/spellsnet/MessageType.java</file>
-            <file>file:/C:/Users/aborbon/Dropbox/Tecnologico/IngenieriaEnComputacion/2019I/AnalisisAlgoritmos/Proyecto2/SpellsDeck/src/net/ClientNet.java</file>
+            <file>file:/C:/Users/aborbon/Dropbox/Tecnologico/IngenieriaEnComputacion/2019I/AnalisisAlgoritmos/Proyecto2/SpellsDeck/src/encrypter/methods/PGP.java</file>
+            <file>file:/C:/Users/aborbon/Dropbox/Tecnologico/IngenieriaEnComputacion/2019I/AnalisisAlgoritmos/Proyecto2/SpellsDeck/src/encrypter/methods/SHA256.java</file>
+            <file>file:/C:/Users/aborbon/Dropbox/Tecnologico/IngenieriaEnComputacion/2019I/AnalisisAlgoritmos/Proyecto2/SpellsDeck/src/encrypter/methods/IFactory.java</file>
+            <file>file:/C:/Users/aborbon/Dropbox/Tecnologico/IngenieriaEnComputacion/2019I/AnalisisAlgoritmos/Proyecto2/SpellsDeck/src/encrypter/Encriptador.java</file>
+            <file>file:/C:/Users/aborbon/Dropbox/Tecnologico/IngenieriaEnComputacion/2019I/AnalisisAlgoritmos/Proyecto2/SpellsDeck/src/encrypter/methods/MD5.java</file>
+            <file>file:/C:/Users/aborbon/Dropbox/Tecnologico/IngenieriaEnComputacion/2019I/AnalisisAlgoritmos/Proyecto2/SpellsDeck/src/encrypter/methods/EncrypterFactory.java</file>
         </group>
     </open-files>
 </project-private>
