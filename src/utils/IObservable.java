@@ -10,5 +10,6 @@ package utils;
  * @author aborbon
  */
 public interface IObservable {
-    
+    public void addObserver(IObserver pObserver);
+    public void notifyObservers(Object pData);
 }

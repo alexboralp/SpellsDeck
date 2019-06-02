@@ -22,12 +22,12 @@ import utils.Logger;
  *
  * @author aborbon
  */
-public final class TripleDES extends AbsEncrypter {
+public final class TRIPLEDES extends AbsEncrypter {
     
     private SecretKeySpec secretPrivateKey;
     Cipher cipher;
     
-    public TripleDES() {
+    public TRIPLEDES() {
         super();
         try {
             cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
@@ -37,16 +37,16 @@ public final class TripleDES extends AbsEncrypter {
         }
     }
     
-    public TripleDES(String pKey) {
+    public TRIPLEDES(String pKey) {
         this();
         this.makeKeys(pKey);
     }
  
     @Override
-    public void setPrivateKey(byte[] pKey)
+    public void setPrivateKey(String pKey)
     {
-        super.setPrivateKey(Arrays.copyOf(pKey, 24));
-        secretPrivateKey = new SecretKeySpec(pKey, "DESede");
+        super.setPrivateKey(pKey);
+        secretPrivateKey = new SecretKeySpec(Base64.getDecoder().decode(pKey), "DESede");
     }
 
     @Override
@@ -88,7 +88,7 @@ public final class TripleDES extends AbsEncrypter {
             MessageDigest sha = MessageDigest.getInstance("SHA-256");
             key = sha.digest(key);
             key = Arrays.copyOf(key, 24);
-            super.setPrivateKey(key);
+            super.setPrivateKey(Base64.getEncoder().encodeToString(key));
             secretPrivateKey = new SecretKeySpec(key, "DESede");
             this.setPublicKey(null);
         }

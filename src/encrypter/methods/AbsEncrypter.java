@@ -5,13 +5,16 @@
  */
 package encrypter.methods;
 
+
+import java.util.Base64;
+
 /**
  *
  * @author aborbon
  */
 public abstract class AbsEncrypter implements IEncrypter{
     private byte[] privateKey;
-    byte[] publicKey;
+    private byte[] publicKey;
     
     public AbsEncrypter() {
         privateKey = null;
@@ -19,13 +22,13 @@ public abstract class AbsEncrypter implements IEncrypter{
     }
     
     @Override
-    public void setPrivateKey(byte[] pKey) {
-        privateKey = pKey;
+    public void setPrivateKey(String pKey) {
+        privateKey = Base64.getDecoder().decode(pKey);
     }
     
     @Override
-    public void setPublicKey(byte[] pKey) {
-        publicKey = pKey;
+    public void setPublicKey(String pKey) {
+        publicKey = Base64.getDecoder().decode(pKey);
     }
     
     @Override
@@ -38,12 +41,12 @@ public abstract class AbsEncrypter implements IEncrypter{
     public abstract void makeKeys(String pKey);
     
     @Override
-    public byte[] getPrivateKey(String pKey) {
-        return privateKey;
+    public String getPrivateKey() {
+        return Base64.getEncoder().encodeToString(privateKey);
     }
     
     @Override
-    public byte[] getPublicKey(String pKey) {
-        return publicKey;
+    public String getPublicKey() {
+        return Base64.getEncoder().encodeToString(publicKey);
     }
 }

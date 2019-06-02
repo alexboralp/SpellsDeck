@@ -7,7 +7,6 @@ package encrypter.methods;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
 import utils.Logger;
 
 /**

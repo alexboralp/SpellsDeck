@@ -23,12 +23,12 @@ public class Encrypter implements IEncrypter{
     }
 
     @Override
-    public void setPrivateKey(byte[] pKey) {
+    public void setPrivateKey(String pKey) {
         encrypter.setPrivateKey(pKey);
     }
 
     @Override
-    public void setPublicKey(byte[] pKey) {
+    public void setPublicKey(String pKey) {
         encrypter.setPublicKey(pKey);
     }
 
@@ -48,13 +48,13 @@ public class Encrypter implements IEncrypter{
     }
 
     @Override
-    public byte[] getPrivateKey(String pKey) {
-        return encrypter.getPrivateKey(pKey);
+    public String getPrivateKey() {
+        return encrypter.getPrivateKey();
     }
 
     @Override
-    public byte[] getPublicKey(String pKey) {
-        return encrypter.getPublicKey(pKey);
+    public String getPublicKey() {
+        return encrypter.getPublicKey();
     }
     
     

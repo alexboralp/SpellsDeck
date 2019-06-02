@@ -18,8 +18,8 @@ import utils.*;
  */
 public class ServerNet implements Constants, Runnable{
     private static ServerNet server;
-    private List<ClientNet> clients;
-    private ServerSocket serverSocket ;
+    private final List<ClientNet> clients;
+    private final ServerSocket serverSocket ;
     private boolean isListening;
     IObserver observer;
     
@@ -30,10 +30,10 @@ public class ServerNet implements Constants, Runnable{
         this.observer = pObserver;
     }
     
-    public synchronized static void startListening(IObserver observer) {
+    public synchronized static void startListening(IObserver pObserver) {
         try {
             if (server == null) {
-                server = new ServerNet(observer);
+                server = new ServerNet(pObserver);
             }
             
             ServerSocket serverSocket = new ServerSocket(PORT);

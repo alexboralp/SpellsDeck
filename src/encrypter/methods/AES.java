@@ -44,10 +44,10 @@ public final class AES extends AbsEncrypter {
     }
  
     @Override
-    public void setPrivateKey(byte[] pKey)
+    public void setPrivateKey(String pKey)
     {
-        super.setPrivateKey(Arrays.copyOf(pKey, 16));
-        secretPrivateKey = new SecretKeySpec(pKey, "AES");
+        super.setPrivateKey(pKey);
+        secretPrivateKey = new SecretKeySpec(Base64.getDecoder().decode(pKey), "AES");
     }
 
     @Override
@@ -89,7 +89,7 @@ public final class AES extends AbsEncrypter {
             MessageDigest sha = MessageDigest.getInstance("SHA-256");
             key = sha.digest(key);
             key = Arrays.copyOf(key, 16);
-            super.setPrivateKey(key);
+            super.setPrivateKey(Base64.getEncoder().encodeToString(key));
             secretPrivateKey = new SecretKeySpec(key, "AES");
             this.setPublicKey(null);
         }

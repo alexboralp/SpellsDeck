@@ -94,26 +94,26 @@ public final class RSA extends AbsEncrypter {
             keys = keyPairGenerator.genKeyPair();
             pubKey = keys.getPublic();
             privKey = keys.getPrivate();
-            super.setPrivateKey(privKey.getEncoded());
-            super.setPublicKey(pubKey.getEncoded());
+            super.setPrivateKey(Base64.getEncoder().encodeToString(privKey.getEncoded()));
+            super.setPublicKey(Base64.getEncoder().encodeToString(pubKey.getEncoded()));
         }
     }
     
     @Override
-    public void setPrivateKey(byte[] pKey) {
+    public void setPrivateKey(String pKey) {
         try {
-            privKey = kf.generatePrivate(new PKCS8EncodedKeySpec(pKey));
-            super.setPrivateKey(privKey.getEncoded());
+            privKey = kf.generatePrivate(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(pKey)));
+            super.setPrivateKey(Base64.getEncoder().encodeToString(privKey.getEncoded()));
         } catch (InvalidKeySpecException ex) {
             Logger.Log(ex.getMessage());
         }
     }
     
     @Override
-    public void setPublicKey(byte[] pKey) {
+    public void setPublicKey(String pKey) {
         try {
-            pubKey = kf.generatePublic(new X509EncodedKeySpec(pKey));
-            super.setPublicKey(pubKey.getEncoded());
+            pubKey = kf.generatePublic(new X509EncodedKeySpec(Base64.getDecoder().decode(pKey)));
+            super.setPublicKey(Base64.getEncoder().encodeToString(pubKey.getEncoded()));
         } catch (InvalidKeySpecException ex) {
             Logger.Log(ex.getMessage());
         }

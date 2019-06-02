@@ -10,11 +10,11 @@ package encrypter.methods;
  * @author aborbon
  */
 public interface IEncrypter {
-    public void setPrivateKey(byte[] pKey);
-    public void setPublicKey(byte[] pKey);
+    public void setPrivateKey(String pKey);
+    public void setPublicKey(String pKey);
     public String encrypt(String pStrToEncrypt);
     public String decrypt(String pStrToDecrypt);
     public void makeKeys(String pKey);
-    public byte[] getPrivateKey(String pKey);
-    public byte[] getPublicKey(String pKey);
+    public String getPrivateKey();
+    public String getPublicKey();
 }
