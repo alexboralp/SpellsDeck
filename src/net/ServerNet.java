@@ -5,6 +5,7 @@
  */
 package net;
 
+import utils.observerpattern.IObserver;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -40,9 +41,9 @@ public class ServerNet implements Constants, Runnable{
             Thread listenThread = new Thread(server);
             listenThread.start();
         } catch (IOException ex) {
-            Logger.Log(ex.getMessage());
+            Logger.Log(ex);
         } catch (Exception ex) {
-            Logger.Log(ex.getMessage());
+            Logger.Log(ex);
         }
     }
     
@@ -57,7 +58,7 @@ public class ServerNet implements Constants, Runnable{
                 Thread.sleep(THREAD_SLEEP_TIME);
                 
             } catch (IOException | InterruptedException ex) {
-                Logger.Log(ex.getMessage());
+                Logger.Log(ex);
             }
         }
     }

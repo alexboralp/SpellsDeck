@@ -5,6 +5,7 @@
  */
 package net;
 
+import utils.observerpattern.Observable;
 import spellsnet.MessageNet;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -32,7 +33,7 @@ public class ClientNet extends Observable implements Constants, Runnable{
             socket = new Socket(pIp, pPort);
             initReaders();
         } catch (IOException ex) {
-            Logger.Log(ex.getMessage());
+            Logger.Log(ex);
         }
     }
 
@@ -46,7 +47,7 @@ public class ClientNet extends Observable implements Constants, Runnable{
                 
                 Thread.sleep(THREAD_SLEEP_TIME);
             } catch (IOException | InterruptedException ex) {
-                Logger.Log(ex.getMessage());
+                Logger.Log(ex);
             }
         }
     }
@@ -58,7 +59,7 @@ public class ClientNet extends Observable implements Constants, Runnable{
             outputWriter.close();
             socket.close();
         } catch (IOException ex) {
-            Logger.Log(ex.getMessage());
+            Logger.Log(ex);
         }
     }
     
@@ -67,7 +68,7 @@ public class ClientNet extends Observable implements Constants, Runnable{
             outputWriter.writeChars(pMsg.getStringMsg());
             outputWriter.flush();
         }catch(IOException ex) {
-            Logger.Log(ex.getMessage());
+            Logger.Log(ex);
         }
     }
     
@@ -81,7 +82,7 @@ public class ClientNet extends Observable implements Constants, Runnable{
                 Thread socketThread = new Thread(this);
                 socketThread.start();
             } catch (IOException ex) {
-                Logger.Log(ex.getMessage());
+                Logger.Log(ex);
             }
         }
     }

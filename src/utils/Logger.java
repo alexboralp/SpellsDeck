@@ -15,7 +15,8 @@ public class Logger {
         
     }
     
-    public static void Log(String message) {
-        System.out.println(message);
+    public static void Log(Exception ex) {
+        ex.printStackTrace();
+        System.out.println(ex.getMessage());
     }
 }

@@ -5,6 +5,7 @@
  */
 package spellsnet;
 
+import utils.observerpattern.IObserver;
 import net.ClientNet;
 import net.ServerNet;
 import spellsnet.MessageNet;
@@ -31,7 +32,7 @@ public class SpellsComms implements IObserver, Constants{
     }
     
     @Override
-    public void notify(Object pData) {
+    public void update(Object pData) {
         MessageNet msg = (MessageNet)pData;
         
         switch(msg.getType()) {
