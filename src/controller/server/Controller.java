@@ -6,6 +6,7 @@
 package controller.server;
 
 import model.socketnet.server.ServerSocketThreadWaitClients;
+import utils.Constants;
 import vista.server.Server;
 
 /**
@@ -43,7 +44,7 @@ public class Controller {
             //</editor-fold>
             
         System.out.println("Creando el socket del server...");
-        int pPort = 19555; // Integer.parseInt(args[0]);
+        int pPort = Constants.PORT; // Integer.parseInt(args[0]);
         ServerSocketThreadWaitClients sstwnc = new ServerSocketThreadWaitClients(pPort);
         
         if (sstwnc.isOk()) {

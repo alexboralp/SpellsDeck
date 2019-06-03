@@ -17,6 +17,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.event.MouseInputAdapter;
+import utils.Constants;
 
 /**
  *
@@ -48,8 +49,6 @@ public class DragListener extends MouseInputAdapter {
     @Override
     public void mousePressed(MouseEvent arg0) {
         
-        System.out.println("Mouse pressed");
-        
         tipo = TIPO.PRESSED;
         
         JLabel childComp = getComponentAt(arg0);
@@ -60,7 +59,6 @@ public class DragListener extends MouseInputAdapter {
     
     @Override
     public void mouseDragged(MouseEvent arg0) {
-        System.out.println("Mouse dragged");
         if (lblSource != null) {
             ((JFrame)arg0.getSource()).setCursor(new Cursor(Cursor.HAND_CURSOR));
         }
@@ -68,18 +66,15 @@ public class DragListener extends MouseInputAdapter {
     
     @Override
     public void mouseReleased(MouseEvent arg0) {
-        System.out.println("Mouse released");
         
         tipo = TIPO.RELEASED;
         
         JLabel lblTarget = getComponentAt(arg0);
         if (lblTarget != null && lblSource != null && lblTarget != lblSource) {
             if ( tipoCartaSource == TIPO_CARTA.CARD_NORMAL && tipoCartaTarget == TIPO_CARTA.CARD_SELECTED) {
-                System.out.println("Mouse released 1");
                 lblTarget.setText(lblSource.getText());
                 lblTarget.setIcon(lblSource.getIcon());
             } else if ( tipoCartaSource == TIPO_CARTA.CARD_SELECTED && tipoCartaTarget == TIPO_CARTA.CARD_SELECTED) {
-                System.out.println("Mouse released 2");
                 String strtemp = lblSource.getText();
                 lblSource.setText(lblTarget.getText());
                 lblTarget.setText(strtemp);
@@ -121,7 +116,7 @@ public class DragListener extends MouseInputAdapter {
                         } else if (childComp instanceof JPanel) {
                             childComp = getComponentAt((JPanel)childComp, p);
                             if (childComp != null && childComp instanceof JLabel) {
-                                if (p.x < 3 * comp.getWidth() / 7) {
+                                if (p.x < Constants.MAX_SELECTED_CARDS_NUMBER * comp.getWidth() / Constants.TOTAL_CARDS) {
                                     ponerTipoCarta(TIPO_CARTA.CARD_SELECTED);
                                     return (JLabel)childComp;
                                 } else {

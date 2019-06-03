@@ -7,7 +7,9 @@ package controller.client;
 
 import java.io.IOException;
 import java.net.Socket;
+import model.game.objects.Deck;
 import model.socketnet.client.ClientSocketThread;
+import utils.Constants;
 import utils.Logger;
 import vista.player.SpellsDeck;
 
@@ -18,7 +20,6 @@ import vista.player.SpellsDeck;
 public class Controller {
     
     private static SpellsDeck ventanaClient;
-    
     private static Administrator administrator;
     
     /**
@@ -48,8 +49,8 @@ public class Controller {
             
             //</editor-fold>
             
-            int pPort = 19555; // Integer.parseInt(args[0]);
-            String pHost = "localhost";
+            int pPort = Constants.PORT; // Integer.parseInt(args[0]);
+            String pHost = Constants.HOST;
             
             System.out.println("Creando el administrador...");
             administrator = new Administrator();
@@ -67,6 +68,11 @@ public class Controller {
                 clientSocketThread.addObserver(administrator);
                 
                 clientSocketThread.startListening();
+                
+                boolean crackedCards[] = new boolean[Constants.MAX_SELECTED_CARDS_NUMBER];
+                administrator.setCrackedCards(crackedCards);
+                Deck deck = new Deck();
+                administrator.setDeck(deck);
                 
                 System.out.println("Creando la interfaz gráfica...");
                 /* Create and display the form */

@@ -10,8 +10,16 @@ package utils;
  * @author aborbon
  */
 public interface Constants {
-    public static int PORT = 15000;
-    public static int THREAD_SLEEP_TIME = 15000;
-    public static String MESSAGE_SEPARATOR = ",";
-    public static String MESSAGE_VALUES_SEPARATOR = "=";
+    public static int PORT = 19555;
+    public static String HOST = "localhost";
+    
+    public static int THREAD_SLEEP_TIME = 150;
+    public static int THREAD_BIG_SLEEP_TIME = 5000;
+    
+    public static int MAX_SELECTED_CARDS_NUMBER = 3;
+    public static int TOTAL_CARDS = 7;
+    
+    public static int SPELLS_NUMBER = 100;
+    public static int SPELL_BYTE_LENGTH = 208;
+    public static int KEY_BYTE_LENGTH = 16;
 }

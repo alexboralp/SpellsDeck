@@ -5,21 +5,24 @@
  */
 package model.game.objects;
 
+import java.io.Serializable;
+import utils.Constants;
+
 /**
  *
  * @author alexander
  */
-public class Deck {
+public class Deck implements Serializable {
     Card deck[];
     int totalCards;
 
     public Deck() {
-        deck = new Card[3];
+        deck = new Card[Constants.MAX_SELECTED_CARDS_NUMBER];
         totalCards = 0;
     }
     
     public boolean addCard(Card pCard) {
-        if (totalCards < 3) {
+        if (totalCards < Constants.MAX_SELECTED_CARDS_NUMBER) {
             deck[totalCards] = pCard;
             totalCards++;
             return true;
@@ -35,8 +38,8 @@ public class Deck {
     }
     
     public Card getCard(int pPos) {
-        if (pPos > 0 && pPos < 4) {
-            return deck[pPos - 1];
+        if (pPos > -1 && pPos < Constants.MAX_SELECTED_CARDS_NUMBER) {
+            return deck[pPos];
         }
         return null;
     }

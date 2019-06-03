@@ -17,6 +17,7 @@ import utils.observerpattern.Observable;
  * @author aborbon
  */
 public class ServerSocketThreadWaitClients extends Observable implements Runnable{
+    
     private int port;
     private ServerSocket serverSocket;
     private boolean ok;
@@ -74,7 +75,6 @@ public class ServerSocketThreadWaitClients extends Observable implements Runnabl
 
     @Override
     public void run() {
-        int numClients = 1;
         if (ok) {
             while (true) {
                 try {
@@ -87,7 +87,6 @@ public class ServerSocketThreadWaitClients extends Observable implements Runnabl
                 } catch (IOException ex) {
                     Logger.Log(ex);
                 }
-                numClients++;
             }
         }
     }

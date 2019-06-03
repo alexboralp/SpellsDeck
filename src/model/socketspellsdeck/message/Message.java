@@ -19,11 +19,11 @@ public class Message extends AbsMessage implements Serializable {
         super();
     }
 
-    public Message(TIPO tipo, String message) {
+    public Message(TIPO tipo, Object message) {
         super(tipo, message);
     }
     
-    public Message(TIPO tipo, String message, String pId) {
+    public Message(String pId, TIPO tipo, Object message) {
         super(tipo, message);
         id = pId;
     }

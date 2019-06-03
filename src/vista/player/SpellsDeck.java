@@ -5,7 +5,15 @@
  */
 package vista.player;
 
+import java.awt.Component;
+import java.util.HashMap;
 import java.util.LinkedList;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import model.socketspellsdeck.message.IMessage;
+import model.socketspellsdeck.message.MessageFactory;
+import utils.Constants;
 import utils.observerpattern.IObservable;
 import utils.observerpattern.IObserver;
 import vista.player.drag.DragListener;
@@ -17,6 +25,7 @@ import vista.player.drag.DragListener;
 public class SpellsDeck extends javax.swing.JFrame implements IObservable {
     
     LinkedList<IObserver> observers;
+    private HashMap componentMap;
 
     /**
      * Creates new form SpellsDeck
@@ -31,6 +40,9 @@ public class SpellsDeck extends javax.swing.JFrame implements IObservable {
         
         addMouseListener(dragListener);
         addMouseMotionListener(dragListener);
+        
+        // Crea un HashMap de componentes de la ventana
+        createComponentMap();
     }
 
     /**
@@ -55,20 +67,22 @@ public class SpellsDeck extends javax.swing.JFrame implements IObservable {
         lblCardSelected1 = new javax.swing.JLabel();
         lblCardSelected2 = new javax.swing.JLabel();
         btnJugar = new javax.swing.JButton();
-        lblGanada2 = new javax.swing.JLabel();
-        lblGanada1 = new javax.swing.JLabel();
+        lblGanado2 = new javax.swing.JLabel();
+        lblGanado1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtSecretWord = new javax.swing.JTextField();
+        txtSecretKey = new javax.swing.JTextField();
         btnSave = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         lblMessage = new javax.swing.JLabel();
+        lblGanado3 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         lblEnemyCard0 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         lblEnemyCard1 = new javax.swing.JLabel();
         lblEnemyCard2 = new javax.swing.JLabel();
         lblPerdido1 = new javax.swing.JLabel();
-        lblPerdid2 = new javax.swing.JLabel();
+        lblPerdido2 = new javax.swing.JLabel();
+        lblPerdido3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -76,57 +90,36 @@ public class SpellsDeck extends javax.swing.JFrame implements IObservable {
         lblCard0.setText("0");
         lblCard0.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         lblCard0.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        lblCard0.setMaximumSize(new java.awt.Dimension(208, 302));
-        lblCard0.setMinimumSize(new java.awt.Dimension(208, 302));
-        lblCard0.setPreferredSize(new java.awt.Dimension(208, 302));
 
         lblCard1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/vista/images/Card1.jpg"))); // NOI18N
         lblCard1.setText("1");
         lblCard1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         lblCard1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        lblCard1.setMaximumSize(new java.awt.Dimension(208, 302));
-        lblCard1.setMinimumSize(new java.awt.Dimension(208, 302));
-        lblCard1.setPreferredSize(new java.awt.Dimension(208, 302));
 
         lblCard2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/vista/images/Card2.jpg"))); // NOI18N
         lblCard2.setText("2");
         lblCard2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         lblCard2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        lblCard2.setMaximumSize(new java.awt.Dimension(208, 302));
-        lblCard2.setMinimumSize(new java.awt.Dimension(208, 302));
-        lblCard2.setPreferredSize(new java.awt.Dimension(208, 302));
 
         lblCard3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/vista/images/Card3.jpg"))); // NOI18N
         lblCard3.setText("3");
         lblCard3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         lblCard3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        lblCard3.setMaximumSize(new java.awt.Dimension(208, 302));
-        lblCard3.setMinimumSize(new java.awt.Dimension(208, 302));
-        lblCard3.setPreferredSize(new java.awt.Dimension(208, 302));
 
         lblCard4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/vista/images/Card4.jpg"))); // NOI18N
         lblCard4.setText("4");
         lblCard4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         lblCard4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        lblCard4.setMaximumSize(new java.awt.Dimension(208, 302));
-        lblCard4.setMinimumSize(new java.awt.Dimension(208, 302));
-        lblCard4.setPreferredSize(new java.awt.Dimension(208, 302));
 
         lblCard5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/vista/images/Card5.jpg"))); // NOI18N
         lblCard5.setText("5");
         lblCard5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         lblCard5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        lblCard5.setMaximumSize(new java.awt.Dimension(208, 302));
-        lblCard5.setMinimumSize(new java.awt.Dimension(208, 302));
-        lblCard5.setPreferredSize(new java.awt.Dimension(208, 302));
 
         lblCard6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/vista/images/Card6.jpg"))); // NOI18N
         lblCard6.setText("6");
         lblCard6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         lblCard6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        lblCard6.setMaximumSize(new java.awt.Dimension(208, 302));
-        lblCard6.setMinimumSize(new java.awt.Dimension(208, 302));
-        lblCard6.setPreferredSize(new java.awt.Dimension(208, 302));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -153,24 +146,35 @@ public class SpellsDeck extends javax.swing.JFrame implements IObservable {
 
         btnJugar.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         btnJugar.setText("A jugar!!!");
+        btnJugar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnJugarActionPerformed(evt);
+            }
+        });
 
-        lblGanada2.setMaximumSize(new java.awt.Dimension(50, 50));
-        lblGanada2.setMinimumSize(new java.awt.Dimension(50, 50));
-        lblGanada2.setPreferredSize(new java.awt.Dimension(50, 50));
+        lblGanado2.setMaximumSize(new java.awt.Dimension(50, 50));
+        lblGanado2.setMinimumSize(new java.awt.Dimension(50, 50));
+        lblGanado2.setPreferredSize(new java.awt.Dimension(50, 50));
 
-        lblGanada1.setMaximumSize(new java.awt.Dimension(50, 50));
-        lblGanada1.setMinimumSize(new java.awt.Dimension(50, 50));
-        lblGanada1.setPreferredSize(new java.awt.Dimension(50, 50));
+        lblGanado1.setMaximumSize(new java.awt.Dimension(50, 50));
+        lblGanado1.setMinimumSize(new java.awt.Dimension(50, 50));
+        lblGanado1.setPreferredSize(new java.awt.Dimension(50, 50));
 
         jLabel3.setText("Palabra secreta:");
 
-        txtSecretWord.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        txtSecretKey.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        txtSecretKey.setFocusable(false);
 
         btnSave.setText("Guardar en un archivo");
 
         jLabel4.setText("Mensajes");
 
         lblMessage.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        lblMessage.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+
+        lblGanado3.setMaximumSize(new java.awt.Dimension(50, 50));
+        lblGanado3.setMinimumSize(new java.awt.Dimension(50, 50));
+        lblGanado3.setPreferredSize(new java.awt.Dimension(50, 50));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -182,9 +186,11 @@ public class SpellsDeck extends javax.swing.JFrame implements IObservable {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lblGanada2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblGanado3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblGanada1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lblGanado2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblGanado1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(lblCardSelected0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -194,7 +200,7 @@ public class SpellsDeck extends javax.swing.JFrame implements IObservable {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnJugar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtSecretWord)
+                            .addComponent(txtSecretKey)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(btnSave))
@@ -217,8 +223,9 @@ public class SpellsDeck extends javax.swing.JFrame implements IObservable {
                         .addComponent(lblCardSelected0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblGanada1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblGanada2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lblGanado1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblGanado2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblGanado3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(lblCardSelected1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -226,7 +233,7 @@ public class SpellsDeck extends javax.swing.JFrame implements IObservable {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtSecretWord, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtSecretKey, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnSave)
                                 .addGap(18, 18, 18)
@@ -264,9 +271,13 @@ public class SpellsDeck extends javax.swing.JFrame implements IObservable {
         lblPerdido1.setMinimumSize(new java.awt.Dimension(50, 50));
         lblPerdido1.setPreferredSize(new java.awt.Dimension(50, 50));
 
-        lblPerdid2.setMaximumSize(new java.awt.Dimension(50, 50));
-        lblPerdid2.setMinimumSize(new java.awt.Dimension(50, 50));
-        lblPerdid2.setPreferredSize(new java.awt.Dimension(50, 50));
+        lblPerdido2.setMaximumSize(new java.awt.Dimension(50, 50));
+        lblPerdido2.setMinimumSize(new java.awt.Dimension(50, 50));
+        lblPerdido2.setPreferredSize(new java.awt.Dimension(50, 50));
+
+        lblPerdido3.setMaximumSize(new java.awt.Dimension(50, 50));
+        lblPerdido3.setMinimumSize(new java.awt.Dimension(50, 50));
+        lblPerdido3.setPreferredSize(new java.awt.Dimension(50, 50));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -278,7 +289,9 @@ public class SpellsDeck extends javax.swing.JFrame implements IObservable {
                         .addContainerGap()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lblPerdid2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblPerdido3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblPerdido2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblPerdido1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
@@ -300,8 +313,10 @@ public class SpellsDeck extends javax.swing.JFrame implements IObservable {
                         .addComponent(lblEnemyCard0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblPerdido1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblPerdid2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(lblPerdido1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lblPerdido2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lblPerdido3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(lblEnemyCard1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -318,21 +333,21 @@ public class SpellsDeck extends javax.swing.JFrame implements IObservable {
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(lblCard0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblCard0)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblCard1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblCard1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblCard2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblCard2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblCard3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(lblCard3)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblCard4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblCard4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblCard5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblCard5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lblCard6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lblCard6))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -347,19 +362,29 @@ public class SpellsDeck extends javax.swing.JFrame implements IObservable {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblCard5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lblCard4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lblCard6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lblCard5)
+                        .addComponent(lblCard4)
+                        .addComponent(lblCard6))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lblCard0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lblCard1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lblCard2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lblCard3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(lblCard0)
+                        .addComponent(lblCard1)
+                        .addComponent(lblCard2)
+                        .addComponent(lblCard3)))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnJugarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJugarActionPerformed
+        // TODO add your handling code here:
+        
+       if (!(lblCardSelected0.getText().equals(lblCardSelected1.getText()) || lblCardSelected0.getText().equals(lblCardSelected2.getText()) || lblCardSelected1.getText().equals(lblCardSelected2.getText()))) {
+           this.updateAll(MessageFactory.createMessage("", IMessage.TIPO.MESSAGE_FROM_CLIENT, MessageFactory.TIPO_MENSAJE.SELECT_DECK));
+       } else {
+           JOptionPane.showMessageDialog(this, "El deck debe contener tres cartas distintas.", "Error", JOptionPane.OK_OPTION);
+       }
+    }//GEN-LAST:event_btnJugarActionPerformed
     
     @Override
     public boolean addObserver(IObserver pObserver) {
@@ -389,6 +414,54 @@ public class SpellsDeck extends javax.swing.JFrame implements IObservable {
             observer.update(pMessage);
         }
     }
+    
+    public void print(String pMessage) {
+        lblMessage.setText(pMessage);
+    }
+    
+    public void eraseEnemyCards() {
+        lblEnemyCard0.setText("");
+        lblEnemyCard0.setIcon(null);
+        lblEnemyCard1.setText("");
+        lblEnemyCard1.setIcon(null);
+        lblEnemyCard2.setText("");
+        lblEnemyCard2.setIcon(null);
+    }
+    
+    public void writeKey (String pKey) {
+        txtSecretKey.setText(pKey);
+    }
+    
+    public void fadeCard(int pPosCard) {
+        JLabel selectedCard = (JLabel)this.getComponentByName("lblSelectedCard" + pPosCard);
+        String iconPath = selectedCard.getIcon().toString();
+        String newIconPath = iconPath.substring(0, iconPath.length() - 4) + "Faded" + iconPath.substring(0, iconPath.length() - 3);
+        System.out.println("Nuevo ícono path: " + newIconPath);
+        selectedCard.setIcon(new ImageIcon(newIconPath));
+    }
+    
+    public int[] getSelectedCards(){
+        int[] selectedCards = new int[3];
+        for (int pos = 0; pos < Constants.TOTAL_CARDS; pos++) {
+            selectedCards[pos] = Integer.getInteger(((JLabel)getComponentByName("lblCardSelected" + pos)).getText());
+        }
+        return selectedCards;
+    }
+    
+    private void createComponentMap() {
+        componentMap = new HashMap<>();
+        Component[] components = this.getContentPane().getComponents();
+        for (int i=0; i < components.length; i++) {
+                componentMap.put(components[i].getName(), components[i]);
+        }
+    }
+
+    public Component getComponentByName(String name) {
+            if (componentMap.containsKey(name)) {
+                    return (Component) componentMap.get(name);
+            }
+            else return null;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnJugar;
@@ -412,11 +485,13 @@ public class SpellsDeck extends javax.swing.JFrame implements IObservable {
     private javax.swing.JLabel lblEnemyCard0;
     private javax.swing.JLabel lblEnemyCard1;
     private javax.swing.JLabel lblEnemyCard2;
-    private javax.swing.JLabel lblGanada1;
-    private javax.swing.JLabel lblGanada2;
+    private javax.swing.JLabel lblGanado1;
+    private javax.swing.JLabel lblGanado2;
+    private javax.swing.JLabel lblGanado3;
     private javax.swing.JLabel lblMessage;
-    private javax.swing.JLabel lblPerdid2;
     private javax.swing.JLabel lblPerdido1;
-    private javax.swing.JTextField txtSecretWord;
+    private javax.swing.JLabel lblPerdido2;
+    private javax.swing.JLabel lblPerdido3;
+    private javax.swing.JTextField txtSecretKey;
     // End of variables declaration//GEN-END:variables
 }

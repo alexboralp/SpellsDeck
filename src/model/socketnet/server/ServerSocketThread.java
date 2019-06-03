@@ -53,9 +53,9 @@ public class ServerSocketThread extends Observable implements Runnable {
                 if ((message = client.getIn().readObject()) != null) {
                     this.updateAll(message);
                 }
-            } catch (EOFException ex) {
+            } catch (IOException ex) {
                 listening = false;
-            } catch (IOException | ClassNotFoundException ex) {
+            } catch (ClassNotFoundException ex) {
                 Logger.Log(ex);
             }
             

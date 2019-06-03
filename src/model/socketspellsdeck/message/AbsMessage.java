@@ -18,7 +18,7 @@ public abstract class AbsMessage implements IMessage, Serializable{
 
     public AbsMessage() { }
 
-    public AbsMessage(TIPO tipo, String message) {
+    public AbsMessage(TIPO tipo, Object message) {
         this.tipo = tipo;
         this.message = message;
     }

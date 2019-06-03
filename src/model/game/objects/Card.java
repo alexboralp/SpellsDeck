@@ -5,11 +5,13 @@
  */
 package model.game.objects;
 
+import java.io.Serializable;
+
 /**
  *
  * @author alexander
  */
-public class Card {
+public class Card implements Serializable {
     public enum TIPO {
         SHA256, MD5, TRIPLEDES, AES, PLAIN, RSA, PGP
     }

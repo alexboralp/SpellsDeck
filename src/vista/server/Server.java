@@ -99,4 +99,8 @@ public class Server extends javax.swing.JFrame implements IObservable {
             observer.update(pMessage);
         }
     }
+    
+    public void print(String message) {
+        txtMessages.append(message + '\n');
+    }
 }
