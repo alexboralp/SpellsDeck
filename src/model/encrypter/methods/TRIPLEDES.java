@@ -30,7 +30,7 @@ public final class TRIPLEDES extends AbsEncrypter {
     public TRIPLEDES() {
         super();
         try {
-            cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher = Cipher.getInstance("DESede/ECB/PKCS5Padding");
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
             Logger.Log(ex);
             cipher = null;
@@ -43,10 +43,10 @@ public final class TRIPLEDES extends AbsEncrypter {
     }
  
     @Override
-    public void setPrivateKey(String pKey)
+    public void setPrivateKey(byte[] pKey)
     {
         super.setPrivateKey(pKey);
-        secretPrivateKey = new SecretKeySpec(Base64.getDecoder().decode(pKey), "DESede");
+        secretPrivateKey = new SecretKeySpec(pKey, "DESede");
     }
 
     @Override
@@ -54,11 +54,11 @@ public final class TRIPLEDES extends AbsEncrypter {
         try
         {
             if (cipher != null) {
-                cipher.init(Cipher.ENCRYPT_MODE, secretPrivateKey);
+                cipher.init(Cipher.ENCRYPT_MODE, secretPrivateKey); //, new IvParameterSpec("12345678".getBytes()));
                 return Base64.getEncoder().encodeToString(cipher.doFinal(pStrToEncrypt.getBytes("UTF-8")));
             }
         }
-        catch (UnsupportedEncodingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e)
+        catch (UnsupportedEncodingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException  e)
         {
             Logger.Log(e);
         }
@@ -70,7 +70,7 @@ public final class TRIPLEDES extends AbsEncrypter {
         try
         {
             if (cipher != null) {
-                cipher.init(Cipher.DECRYPT_MODE, secretPrivateKey);
+                cipher.init(Cipher.DECRYPT_MODE, secretPrivateKey); // , new IvParameterSpec("12345678".getBytes()));
                 return new String(cipher.doFinal(Base64.getDecoder().decode(pStrToDecrypt)));
             }
         }
@@ -88,9 +88,9 @@ public final class TRIPLEDES extends AbsEncrypter {
             MessageDigest sha = MessageDigest.getInstance("SHA-256");
             key = sha.digest(key);
             key = Arrays.copyOf(key, 24);
-            super.setPrivateKey(Base64.getEncoder().encodeToString(key));
+            super.setPrivateKey(key);
             secretPrivateKey = new SecretKeySpec(key, "DESede");
-            this.setPublicKey(null);
+            this.setPublicKey(generateStupidKeyHex().getBytes());
         }
         catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             Logger.Log(e);

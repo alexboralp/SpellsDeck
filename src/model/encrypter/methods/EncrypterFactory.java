@@ -14,10 +14,20 @@ import utils.Logger;
  * @author aborbon
  */
 public class EncrypterFactory {
+    
+    public enum METHODS {
+        MD5,
+        SHA256,
+        AES,
+        TRIPLEDES,
+        PLAIN,
+        RSA,
+        PGP
+    }
 
     public static IEncrypter getIntance(String name) {
         try {
-            Class<?> myClass = Class.forName(name);
+            Class<?> myClass = Class.forName("model.encrypter.methods." + name);
             Constructor<?> constructor = myClass.getConstructors()[0];
             Object object = constructor.newInstance(new Object[] { });
             return (IEncrypter)object;

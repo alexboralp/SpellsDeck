@@ -5,9 +5,6 @@
  */
 package model.encrypter.methods;
 
-
-import java.util.Base64;
-
 /**
  *
  * @author aborbon
@@ -16,19 +13,25 @@ public abstract class AbsEncrypter implements IEncrypter{
     private byte[] privateKey;
     private byte[] publicKey;
     
+    private static final char[] alfabeto = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+                         'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+                         '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
+    private static final char[] alfabetoHex = {'A', 'B', 'C', 'D', 'E', 'F',
+                         '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
+    
     public AbsEncrypter() {
         privateKey = null;
         publicKey = null;
     }
     
     @Override
-    public void setPrivateKey(String pKey) {
-        privateKey = Base64.getDecoder().decode(pKey);
+    public void setPrivateKey(byte[] pKey) {
+        privateKey = pKey;
     }
     
     @Override
-    public void setPublicKey(String pKey) {
-        publicKey = Base64.getDecoder().decode(pKey);
+    public void setPublicKey(byte[] pKey) {
+        publicKey = pKey;
     }
     
     @Override
@@ -41,12 +44,70 @@ public abstract class AbsEncrypter implements IEncrypter{
     public abstract void makeKeys(String pKey);
     
     @Override
-    public String getPrivateKey() {
-        return Base64.getEncoder().encodeToString(privateKey);
+    public byte[] getPrivateKey() {
+        if (privateKey != null) {
+            return privateKey;
+        }
+        
+        return generateStupidKey().getBytes();
     }
     
     @Override
-    public String getPublicKey() {
-        return Base64.getEncoder().encodeToString(publicKey);
+    public byte[] getPublicKey() {
+        if (privateKey != null) {
+            return publicKey;
+        }
+        
+        return generateStupidKey().getBytes();
+    }
+    
+    public static String generateStupidKey() {
+        
+        int longitud = (int)(16 + Math.floor(Math.random() * 4) * 16);
+        String resp = "";
+        
+        for (int cant = 0; cant < longitud; cant++) {
+            int pos = (int)(Math.floor(Math.random() * alfabeto.length));
+            resp += alfabeto[pos];
+        }
+        
+        return resp;
+    }
+    
+    public static String generateStupidKey(int longitud) {
+        
+        String resp = "";
+        
+        for (int cant = 0; cant < longitud; cant++) {
+            int pos = (int)(Math.floor(Math.random() * alfabeto.length));
+            resp += alfabeto[pos];
+        }
+        
+        return resp;
+    }
+    
+    protected static String generateStupidKeyHex() {
+        
+        int longitud = (int)(16 + Math.floor(Math.random() * 4) * 16);
+        String resp = "";
+        
+        for (int cant = 0; cant < longitud; cant++) {
+            int pos = (int)(Math.floor(Math.random() * alfabetoHex.length));
+            resp += alfabetoHex[pos];
+        }
+        
+        return resp;
+    }
+    
+    protected static String generateStupidKeyHex(int longitud) {
+        
+        String resp = "";
+        
+        for (int cant = 0; cant < longitud; cant++) {
+            int pos = (int)(Math.floor(Math.random() * alfabetoHex.length));
+            resp += alfabetoHex[pos];
+        }
+        
+        return resp;
     }
 }

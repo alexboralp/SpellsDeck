@@ -21,8 +21,8 @@ public class Card implements Serializable {
     private String imagePath;
     private String description;
     private String encryptedDescription;
-    private String key1;
-    private String key2;
+    private byte[] key1;
+    private byte[] key2;
 
     public Card() {
         this.id = "";
@@ -30,11 +30,11 @@ public class Card implements Serializable {
         this.imagePath = "";
         this.description = "";
         this.encryptedDescription = "";
-        this.key1 = "";
-        this.key2 = "";
+        this.key1 = null;
+        this.key2 = null;
     }
 
-    public Card(String id, String tipo, String imagePath, String description, String encryptedDescription, String key1, String key2) {
+    public Card(String id, String tipo, String imagePath, String description, String encryptedDescription, byte[] key1, byte[] key2) {
         this.id = id;
         this.tipo = tipo;
         this.imagePath = imagePath;
@@ -86,19 +86,19 @@ public class Card implements Serializable {
         this.encryptedDescription = encryptedDescription;
     }
 
-    public String getKey1() {
+    public byte[] getKey1() {
         return key1;
     }
 
-    public void setKey1(String key1) {
+    public void setKey1(byte[] key1) {
         this.key1 = key1;
     }
 
-    public String getKey2() {
+    public byte[] getKey2() {
         return key2;
     }
 
-    public void setKey2(String key2) {
+    public void setKey2(byte[] key2) {
         this.key2 = key2;
     }
 

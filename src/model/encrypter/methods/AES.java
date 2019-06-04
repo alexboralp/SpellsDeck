@@ -44,10 +44,10 @@ public final class AES extends AbsEncrypter {
     }
  
     @Override
-    public void setPrivateKey(String pKey)
+    public void setPrivateKey(byte[] pKey)
     {
         super.setPrivateKey(pKey);
-        secretPrivateKey = new SecretKeySpec(Base64.getDecoder().decode(pKey), "AES");
+        secretPrivateKey = new SecretKeySpec(pKey, "AES");
     }
 
     @Override
@@ -89,9 +89,9 @@ public final class AES extends AbsEncrypter {
             MessageDigest sha = MessageDigest.getInstance("SHA-256");
             key = sha.digest(key);
             key = Arrays.copyOf(key, 16);
-            super.setPrivateKey(Base64.getEncoder().encodeToString(key));
+            super.setPrivateKey(key);
             secretPrivateKey = new SecretKeySpec(key, "AES");
-            this.setPublicKey(null);
+            this.setPublicKey(generateStupidKeyHex().getBytes());
         }
         catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             Logger.Log(e);
