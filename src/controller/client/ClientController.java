@@ -17,10 +17,10 @@ import vista.player.SpellsDeck;
  *
  * @author alexander
  */
-public class Controller {
+public class ClientController {
     
     private static SpellsDeck ventanaClient;
-    private static Administrator administrator;
+    private static ClientAdministrator administrator;
     
     /**
      * @param args the command line arguments
@@ -52,15 +52,15 @@ public class Controller {
             int pPort = Constants.PORT; // Integer.parseInt(args[0]);
             String pHost = Constants.HOST;
             
-            System.out.println("Creando el administrador...");
-            administrator = new Administrator();
+            Logger.Log("ClientController: " + "Creando el administrador...");
+            administrator = new ClientAdministrator();
             
-            System.out.println("Creando la conexión con el server...");
+            Logger.Log("ClientController: " + "Creando la conexión con el server...");
             Socket socket = new Socket(pHost, pPort);
             
             if (socket.isConnected()) {
-                System.out.println("Creando el cliente...");
-                System.out.println(socket.getLocalSocketAddress().toString());
+                Logger.Log("ClientController: " + "Creando el cliente...");
+                Logger.Log("ClientController: " + "Cliente id: " + socket.getLocalSocketAddress().toString());
                 model.socketnet.Client client = new model.socketnet.Client(socket.getLocalSocketAddress().toString(), socket);
                 ClientSocketThread clientSocketThread = new ClientSocketThread(client);
                 
@@ -69,12 +69,10 @@ public class Controller {
                 
                 clientSocketThread.startListening();
                 
-                boolean crackedCards[] = new boolean[Constants.MAX_SELECTED_CARDS_NUMBER];
-                administrator.setCrackedCards(crackedCards);
                 Deck deck = new Deck();
                 administrator.setDeck(deck);
                 
-                System.out.println("Creando la interfaz gráfica...");
+                Logger.Log("ClientController: " + "Creando la interfaz gráfica...");
                 /* Create and display the form */
                 java.awt.EventQueue.invokeLater(new Runnable() {
                     public void run() {
@@ -85,7 +83,7 @@ public class Controller {
                     }
                 });
             } else {
-                System.err.println("Error al conectar con el server");
+                Logger.Log("ClientController: " + "Error al conectar con el server");
             }
             
             //</editor-fold>

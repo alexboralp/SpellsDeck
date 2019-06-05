@@ -29,7 +29,7 @@ public class ClientSocketThread extends Observable implements Runnable {
     @Override
     public void run() {
         Object message;
-        System.out.println("Esperando mensajes del server");
+        Logger.Log("ClientSocketThread: " + "Esperando mensajes del server");
         while (listening) {
             try {
                 if ((message = client.getIn().readObject()) != null) {
@@ -49,7 +49,7 @@ public class ClientSocketThread extends Observable implements Runnable {
     
     public void sendMessage(Object pMessage) {
         try {
-            System.out.println("Enviando mensaje al server");
+            Logger.Log("ClientSocketThread: " + "Enviando mensaje al server");
             client.getOut().writeObject(pMessage);
         } catch (IOException ex) {
             Logger.Log(ex);
@@ -62,7 +62,7 @@ public class ClientSocketThread extends Observable implements Runnable {
             socketThread = new Thread(this);
             socketThread.start();
         } else {
-            System.out.println("Hay algún error con el cliente.");
+            Logger.Log("ClientSocketThread: " + "Hay algún error con el cliente.");
         }
     }
     

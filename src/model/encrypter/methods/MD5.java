@@ -16,7 +16,7 @@ import utils.Logger;
  * @author aborbon
  */
 public class MD5 extends AbsEncrypter {
-
+    
     @Override
     public String encrypt(String pStrToEncrypt) {
         try {
@@ -27,12 +27,12 @@ public class MD5 extends AbsEncrypter {
             Logger.Log(ex);
         }
         
-        return null;
+        return "";
     }
 
     @Override
     public String decrypt(String pStrToDecrypt) {
-        return null;
+        return "";
     }
 
     @Override

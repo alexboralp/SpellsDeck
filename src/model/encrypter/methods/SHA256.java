@@ -27,12 +27,12 @@ public class SHA256 extends AbsEncrypter {
             Logger.Log(ex);
         }
         
-        return null;
+        return "";
     }
 
     @Override
     public String decrypt(String pStrToDecrypt) {
-        return null;
+        return "";
     }
 
     @Override

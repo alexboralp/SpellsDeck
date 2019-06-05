@@ -24,7 +24,6 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.logging.Level;
 
 /**
  *
@@ -34,14 +33,16 @@ public final class RSA extends AbsEncrypter {
     
     private final int keySize = 2048;
     
-    KeyPairGenerator keyPairGenerator;
+    private KeyPairGenerator keyPairGenerator;
     
-    KeyPair keys;
-    PrivateKey privKey;
-    PublicKey pubKey;
-    Cipher cipher;
+    private KeyPair keys;
+    private PrivateKey privKey;
+    private PublicKey pubKey;
+    private Cipher cipher;
     
-    KeyFactory kf;
+    private KeyFactory kf;
+    
+    private boolean ok;
     
     public RSA() {
         super();
@@ -50,11 +51,13 @@ public final class RSA extends AbsEncrypter {
             keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(keySize, new SecureRandom());
             cipher = Cipher.getInstance("RSA");
+            ok = true;
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
             Logger.Log(ex);
             kf = null;
             keyPairGenerator = null;
             cipher = null;
+            ok = false;
         }
     }
     
@@ -66,7 +69,7 @@ public final class RSA extends AbsEncrypter {
     @Override
     public String encrypt(String pStrToEncrypt) {
         try {
-            if (cipher != null) {
+            if (ok && cipher != null) {
                 cipher.init(Cipher.ENCRYPT_MODE, pubKey);
                 
                 return Base64.getEncoder().encodeToString(cipher.doFinal(pStrToEncrypt.getBytes(UTF_8)));
@@ -74,13 +77,13 @@ public final class RSA extends AbsEncrypter {
         } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
             Logger.Log(ex);
         }
-        return null;
+        return "";
     }
 
     @Override
     public String decrypt(String pStrToDecrypt) {
         try {
-            if (cipher != null) {
+            if (ok && cipher != null) {
                 cipher.init(Cipher.DECRYPT_MODE, privKey);
                 
                 return new String(cipher.doFinal(Base64.getDecoder().decode(pStrToDecrypt)));
@@ -88,7 +91,7 @@ public final class RSA extends AbsEncrypter {
         } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
             Logger.Log(ex);
         }
-        return null;
+        return "";
     }
 
     @Override
@@ -101,6 +104,7 @@ public final class RSA extends AbsEncrypter {
             PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(privKey.getEncoded());
             super.setPublicKey(x509EncodedKeySpec.getEncoded());
             super.setPrivateKey(pkcs8EncodedKeySpec.getEncoded());
+            ok = true;
         }
     }
     
@@ -109,8 +113,10 @@ public final class RSA extends AbsEncrypter {
         try {
             privKey = kf.generatePrivate(new PKCS8EncodedKeySpec(pKey));
             super.setPrivateKey(privKey.getEncoded());
+            ok = true;
         } catch (InvalidKeySpecException ex) {
             Logger.Log(ex);
+            ok = false;
         }
     }
     
@@ -119,8 +125,10 @@ public final class RSA extends AbsEncrypter {
         try {
             pubKey = kf.generatePublic(new X509EncodedKeySpec(pKey));
             super.setPublicKey(pubKey.getEncoded());
+            ok = true;
         } catch (InvalidKeySpecException ex) {
             Logger.Log(ex);
+            ok = false;
         }
     }
     

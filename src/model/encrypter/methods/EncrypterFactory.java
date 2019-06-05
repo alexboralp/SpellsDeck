@@ -15,7 +15,7 @@ import utils.Logger;
  */
 public class EncrypterFactory {
     
-    public enum METHODS {
+    public static enum METHOD {
         MD5,
         SHA256,
         AES,

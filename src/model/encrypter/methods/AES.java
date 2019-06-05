@@ -26,35 +26,50 @@ import utils.Logger;
 public final class AES extends AbsEncrypter {
  
     private SecretKeySpec secretPrivateKey;
-    Cipher cipher;
+    private Cipher cipher;
+    private boolean ok;
     
     public AES() {
         super();
         try {
             cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            ok = true;
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
             Logger.Log(ex);
             cipher = null;
+            ok = false;
         }
     }
     
     public AES(String pKey) {
         this();
-        this.makeKeys(pKey);
+        try {
+            this.makeKeys(pKey);
+            ok = true;
+        } catch (Exception ex) {
+            Logger.Log(ex);
+            ok = false;
+        }
     }
  
     @Override
     public void setPrivateKey(byte[] pKey)
     {
-        super.setPrivateKey(pKey);
-        secretPrivateKey = new SecretKeySpec(pKey, "AES");
+        try{
+            super.setPrivateKey(pKey);
+            secretPrivateKey = new SecretKeySpec(pKey, "AES");
+            ok = true;
+        } catch (Exception ex) {
+            Logger.Log(ex);
+            ok = false;
+        }
     }
 
     @Override
     public String encrypt(String pStrToEncrypt) {
         try
         {
-            if (cipher != null) {
+            if (ok && cipher != null) {
                 cipher.init(Cipher.ENCRYPT_MODE, secretPrivateKey);
                 return Base64.getEncoder().encodeToString(cipher.doFinal(pStrToEncrypt.getBytes("UTF-8")));
             }
@@ -63,14 +78,14 @@ public final class AES extends AbsEncrypter {
         {
             Logger.Log(e);
         }
-        return null;
+        return "";
     }
 
     @Override
     public String decrypt(String pStrToDecrypt) {
         try
         {
-            if (cipher != null) {
+            if (ok && cipher != null) {
                 cipher.init(Cipher.DECRYPT_MODE, secretPrivateKey);
                 return new String(cipher.doFinal(Base64.getDecoder().decode(pStrToDecrypt)));
             }
@@ -78,8 +93,10 @@ public final class AES extends AbsEncrypter {
         catch (InvalidKeyException | BadPaddingException | IllegalBlockSizeException e)
         {
             Logger.Log(e);
+        } catch(Exception e) {
+            Logger.Log(e);
         }
-        return null;
+        return "";
     }
 
     @Override
@@ -92,9 +109,11 @@ public final class AES extends AbsEncrypter {
             super.setPrivateKey(key);
             secretPrivateKey = new SecretKeySpec(key, "AES");
             this.setPublicKey(generateStupidKeyHex().getBytes());
+            ok = true;
         }
         catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             Logger.Log(e);
+            ok = false;
         }
     }
     

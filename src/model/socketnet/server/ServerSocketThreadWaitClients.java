@@ -53,7 +53,7 @@ public class ServerSocketThreadWaitClients extends Observable implements Runnabl
         try {
             serverSocket = new ServerSocket(port);
         } catch (IOException e) {
-            System.err.println("Could not listen on port: " + port + ".");
+            Logger.Log("ServerSocketThreadWaitForClients: " + "No puedo escuchar en el puerto: " + port + ".");
             return false;
         }
         return true;

@@ -22,4 +22,10 @@ public interface Constants {
     public static int SPELLS_NUMBER = 100;
     public static int SPELL_BYTE_LENGTH = 208;
     public static int KEY_BYTE_LENGTH = 16;
+    
+    public static int NUMBER_OF_PLAYERS = 2;
+    
+    public static String STRING_SEPARATOR = ",";
+    
+    public static int TOTAL_WIN_MATCHES = 2;
 }

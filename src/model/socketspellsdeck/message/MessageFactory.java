@@ -19,14 +19,18 @@ public class MessageFactory{
         SELECT_DECK,
         ENEMY_DECK,
         START_GAME,
-        CARD_CRACKED,
+        START_PLAYING,
+        CARD_ENEMY_CRACKED,
+        CARD_YOURS_CRACKED,
         // HALF_KEY,
         FINAL_MESSAGE,
         WIN_ONE_MATCH,
-        LOOSER_ONE_MATCH,
+        LOSE_ONE_MATCH,
         WINNER,
         LOOSER,
-        SECOND_PLAYER_DESCONECTED
+        SECOND_PLAYER_DESCONECTED,
+        WRONG_NUMBER_OF_CARDS
+        //RESTART_MATCH
         
         //TWO_PLAYERS_READY,
         //START_DECK,
@@ -41,7 +45,7 @@ public class MessageFactory{
         super();
     }*/
     
-    public static Message createMessage(String pId, TIPO pTipo, TIPO_MENSAJE pTipoMensaje) {
+    public static Message createMessage(String pId, TIPO pTipo, Object pTipoMensaje) {
         return new Message(pId, pTipo, pTipoMensaje);
     }
     

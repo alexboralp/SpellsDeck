@@ -14,43 +14,74 @@ import utils.Logger;
  */
 public class PGP extends AbsEncrypter {
     
-    RSA rsa;
-    AES aes;
+    private final RSA rsa;
+    private final AES aes;
+    private boolean ok;
     
     public PGP() {
         super();
         rsa = new RSA();
         aes = new AES();
+        ok = true;
     }
 
     @Override
     public String encrypt(String pStrToEncrypt) {
-        return aes.encrypt(pStrToEncrypt);
+        try{
+            if(ok){
+                return aes.encrypt(pStrToEncrypt);
+            }
+        } catch(Exception ex) { 
+            Logger.Log(ex);
+        }
+        return "";
     }
 
     @Override
     public String decrypt(String pStrToDecrypt) {
-        return aes.decrypt(pStrToDecrypt);
+        try{
+            if(ok){
+                return aes.decrypt(pStrToDecrypt);
+            }
+        } catch(Exception ex) { 
+            Logger.Log(ex);
+        }
+        return "";
     }
 
     @Override
     public void makeKeys(String pKey) {
-        rsa.makeKeys(pKey);
-        aes.makeKeys(generateStupidKey(16));
-        String aesPrivateKeyEncrypted = rsa.encrypt(Base64.getEncoder().encodeToString(aes.getPrivateKey()));
-        super.setPrivateKey(rsa.getPrivateKey());
-        this.setPublicKey(Base64.getDecoder().decode(aesPrivateKeyEncrypted));
+        try {
+            rsa.makeKeys(pKey);
+            aes.makeKeys(generateStupidKey(16));
+            String aesPrivateKeyEncrypted = rsa.encrypt(Base64.getEncoder().encodeToString(aes.getPrivateKey()));
+            super.setPrivateKey(rsa.getPrivateKey());
+            this.setPublicKey(Base64.getDecoder().decode(aesPrivateKeyEncrypted));
+            ok = true;
+        } catch(Exception ex) {
+            ok = false;
+        }
     }
 
     @Override
     public void setPrivateKey(byte[] pKey) {
-        super.setPrivateKey(pKey);
-        rsa.setPrivateKey(pKey);
+        try {
+            super.setPrivateKey(pKey);
+            rsa.setPrivateKey(pKey);
+            ok = true;
+        } catch(Exception ex) {
+            ok = false;
+        }
     }
     
     @Override
     public void setPublicKey(byte[] pKey) {
-        super.setPublicKey(pKey);
-        aes.setPrivateKey(Base64.getDecoder().decode(rsa.decrypt(Base64.getEncoder().encodeToString(this.getPublicKey()))));
+        try {
+            super.setPublicKey(pKey);
+            aes.setPrivateKey(Base64.getDecoder().decode(rsa.decrypt(Base64.getEncoder().encodeToString(this.getPublicKey()))));
+            ok = true;
+        } catch(Exception ex) {
+            ok = false;
+        }
     }
 }

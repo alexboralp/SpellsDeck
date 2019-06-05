@@ -11,12 +11,16 @@ package utils;
  */
 public class Logger {
     
-    public Logger() {
-        
+    public static void Log(Exception pEx) {
+        //pEx.printStackTrace();
+        System.out.println(pEx.getMessage());
     }
     
-    public static void Log(Exception ex) {
-        ex.printStackTrace();
-        System.out.println(ex.getMessage());
+    public static void Log(String pMessage) {
+        System.out.println(pMessage);
+    }
+    
+    public static void Error(String message) {
+        System.err.println(message);
     }
 }

@@ -10,17 +10,18 @@ import model.encrypter.methods.EncrypterFactory;
 import model.encrypter.methods.IEncrypter;
 import model.socketnet.server.ServerSocketThreadWaitClients;
 import utils.Constants;
+import utils.Logger;
 import vista.server.Server;
 
 /**
  *
  * @author alexander
  */
-public class Controller {
+public class ServerController {
     
     private static Server ventanaServer;
     
-    private static Administrator administrator;
+    private static ServerAdministrator administrator;
     
     /**
      * @param args the command line arguments
@@ -45,17 +46,15 @@ public class Controller {
             //</editor-fold>
             
             //</editor-fold>
-            
+               
         // Probando los métodos de encriptación
         
-        System.out.println(ClassLoader.getSystemResource("vista/images/Card0.txt").getFile());
+        /*System.out.println(ClassLoader.getSystemResource("vista/images/Card0.txt").getFile());
         String textoPlain = utils.Utils.readCompleteTxtFile(ClassLoader.getSystemResource("vista/images/Card0.txt").getFile().substring(1)); // En Windows se agrega .substring(1)
-        //System.out.println(text);
-        String method = EncrypterFactory.METHODS.PGP.toString();
+        String method = EncrypterFactory.METHOD.PGP.toString();
         IEncrypter enc = EncrypterFactory.getIntance(method);
         String key = AbsEncrypter.generateStupidKey(128);
         enc.makeKeys(key);
-        //String textoPlain = "Este es el texto que quiero que me encripten y desencripten.";
         System.out.println("Pla: " + textoPlain);
         byte[] key1 = enc.getPrivateKey();
         byte[] key2 = enc.getPublicKey();
@@ -77,24 +76,24 @@ public class Controller {
         enc.setPrivateKey(key2);
         enc.setPublicKey(key1);
         decryptedText = enc.decrypt(encryptedText);
-        System.out.println("Dec: " + decryptedText);
+        System.out.println("Dec: " + decryptedText);*/
             
-        System.out.println("Creando el socket del server...");
+        Logger.Log("ServerController: " + "Creando el socket del server...");
         int pPort = Constants.PORT; // Integer.parseInt(args[0]);
         ServerSocketThreadWaitClients sstwnc = new ServerSocketThreadWaitClients(pPort);
         
         if (sstwnc.isOk()) {
             
-            System.out.println("Creando el administrador...");
-            administrator = new Administrator();
+            Logger.Log("ServerController: " + "Creando el administrador...");
+            administrator = new ServerAdministrator();
             
             sstwnc.addObserver(administrator);
             
-            System.out.println("En espera de nuevos clientes...");
+            Logger.Log("ServerController: " + "En espera de nuevos clientes...");
             sstwnc.startListening();
 
             /* Create and display the form */
-            System.out.println("Creando la interfaz gráfica...");
+            Logger.Log("ServerController: " + "Creando la interfaz gráfica...");
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
                     ventanaServer = new Server();
@@ -104,7 +103,7 @@ public class Controller {
                 }
             });
         } else {
-            System.out.println("Error al crear el socket del server.");
+            Logger.Log("ServerController: " + "Error al crear el socket del server.");
         }
             
         //</editor-fold>

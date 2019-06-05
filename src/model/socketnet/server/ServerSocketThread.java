@@ -5,12 +5,10 @@
  */
 package model.socketnet.server;
 
-import java.io.EOFException;
 import model.socketnet.Client;
 import java.io.IOException;
 import utils.Logger;
 import utils.observerpattern.Observable;
-import utils.Print;
 
 /**
  *
@@ -46,8 +44,8 @@ public class ServerSocketThread extends Observable implements Runnable {
     @Override
     public void run() {
         Object message;
-        Print.print("Nuevo cliente recibido...");
-        Print.print("Esperando mensajes del cliente...");
+        Logger.Log("ServerSocketThread: " + "Nuevo cliente recibido...");
+        Logger.Log("ServerSocketThread: " + "Esperando mensajes del cliente...");
         while (listening) {
             try {
                 if ((message = client.getIn().readObject()) != null) {
@@ -64,13 +62,13 @@ public class ServerSocketThread extends Observable implements Runnable {
             }
         }
         
-        Print.print("Cerrando la conección con el cliente...");
+        Logger.Log("ServerSocketThread: " + "Cerrando la conección con el cliente...");
         client.closeConnections();
-        Print.print("Conección cerrada.");
+        Logger.Log("ServerSocketThread: " + "Conección cerrada.");
     }
     
     public void sendMessage(Object pMessage) {
-        System.out.println("Enviando un mensaje al cliente");
+        Logger.Log("ServerSocketThread: " + "Enviando un mensaje al cliente");
         try {
             client.getOut().writeObject(pMessage);
         } catch (IOException ex) {

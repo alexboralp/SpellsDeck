@@ -8,6 +8,7 @@ package controller.server;
 import static java.lang.Thread.sleep;
 import java.util.LinkedList;
 import model.game.Game;
+import model.game.objects.SpellsBook;
 import model.socketnet.server.ServerSocketThread;
 import model.socketspellsdeck.message.IMessage;
 import model.socketspellsdeck.message.Message;
@@ -21,7 +22,7 @@ import vista.server.Server;
  *
  * @author alexander
  */
-public class Administrator implements IObserver, Runnable {
+public class ServerAdministrator implements IObserver, Runnable {
     public final int MAX_NUM_CLIENTS = 2;
     
     private Server ventanaServer;
@@ -30,7 +31,7 @@ public class Administrator implements IObserver, Runnable {
     
     Thread cleaner;
     
-    public Administrator() {
+    public ServerAdministrator() {
         super();
         clients = new LinkedList<>();
         games = new LinkedList<>();
@@ -59,33 +60,33 @@ public class Administrator implements IObserver, Runnable {
     @Override
     public void update(Object pMessage) {
         if (pMessage instanceof Message) {
-            System.out.println("Recibí un mensaje.");
+            Logger.Log("ServerAdministrator: " + "Recibí un mensaje.");
             Message message = (Message) pMessage;
         
             if (null != message.getTipo()) {
                 switch (message.getTipo()) {
                     case MESSAGE_FROM_CLIENT:
-                        System.out.println("El mensaje viene del cliente.");
+                        Logger.Log("ServerAdministrator: " + "El mensaje viene del cliente.");
                         ventanaServer.print("CLIENT: " + message.getId() + ", Mensaje: " + message.toString());
                         break;
                     case MESSAGE_FROM_SERVER:
-                        System.out.println("El mensaje viene del server.");
+                        Logger.Log("ServerAdministrator: " + "El mensaje viene del server.");
                         for (ServerSocketThread client : clients) {
                             System.out.println("cliente: " + client.toString());
                             if (client.getClient().isOk()) {
-                                System.out.println("El cliente está bien, voy mandando el mensaje.");
+                                Logger.Log("ServerAdministrator: " + "El cliente está bien, voy mandando el mensaje.");
                                 ventanaServer.print("Cliente " + message.getId() + ": Enviando un mensaje al cliente. Mensaje: " + message.toString());
                                 client.sendMessage(pMessage);
                             }
                         }
                         break;
                     case CLOSE_CONNECTION:
-                        System.out.println("El mensaje viene del cliente solicitando cerrar la conección.");
-                        System.out.println("Cliente: " + (String)message.getMessage());
+                        Logger.Log("ServerAdministrator: " + "El mensaje viene del cliente solicitando cerrar la conección.");
+                        Logger.Log("ServerAdministrator: " + "Cliente: " + (String)message.getMessage());
                         ventanaServer.print("Cliente " + message.getId() + ": Solicitud de cerrar la conección. Mensaje: " + message.toString());
                         for (ServerSocketThread client : clients) {
                             if (client.getClient().getId().equals((String)message.getMessage())) {
-                                System.out.println("Cerrando la conexión con el cliente.");
+                                Logger.Log("ServerAdministrator: " + "Cerrando la conexión con el cliente.");
                                 client.getClient().closeConnections();
                                 ventanaServer.print("Cliente " + message.getId() + ": Conección cerrada.");
                             }
@@ -100,15 +101,16 @@ public class Administrator implements IObserver, Runnable {
                 }
             }
         } else if (pMessage instanceof ServerSocketThread) {
-            System.out.println("Recibí un cliente nuevo.");
+            Logger.Log("ServerAdministrator: " + "Recibí un cliente nuevo.");
             ServerSocketThread newClient = (ServerSocketThread)pMessage;
             addClient(newClient);
             newClient.addObserver(this);
             ventanaServer.print("Nuevo cliente " + newClient.getClient().getId());
-            if (clients.size() % 2 == 0) {
+            if (clients.size() % Constants.NUMBER_OF_PLAYERS == 0) {
                 Game game = new Game(clients.get(clients.size() - 2), clients.getLast());
                 games.add(game);
-                ventanaServer.print("Iniciando el juego entre " + game.getPlayer1().getClient().getId() + " y " + game.getPlayer2().getClient().getId());
+                Logger.Log("ServerAdministrator: " + "Iniciando el juego entre " + game.getPlayer(0).getClient().getId() + " y " + game.getPlayer(1).getClient().getId());
+                ventanaServer.print("Iniciando el juego entre " + game.getPlayer(0).getClient().getId() + " y " + game.getPlayer(1).getClient().getId());
                 newClient.sendMessage(MessageFactory.createMessage(newClient.getClient().getId(), IMessage.TIPO.MESSAGE_FROM_SERVER, MessageFactory.TIPO_MENSAJE.START_GAME));
                 clients.get(clients.size() - 2).sendMessage(MessageFactory.createMessage(newClient.getClient().getId(), IMessage.TIPO.MESSAGE_FROM_SERVER, MessageFactory.TIPO_MENSAJE.START_GAME));
             } else {
@@ -135,11 +137,12 @@ public class Administrator implements IObserver, Runnable {
     private void cleanGames() {
         for (Game game : games) {
             // Si la conección de alguno de los dos jugadores no está bien
-            if (!(game.getPlayer1().getClient().isOk() && game.getPlayer2().getClient().isOk())) {
-                ventanaServer.print("Cerrando el juego de " + game.getPlayer1().getClient().getId() + " y " + game.getPlayer2().getClient().getId());
-                if (game.getPlayer1().getClient().isOk()){
-                    game.getPlayer1().sendMessage(MessageFactory.createMessage("", IMessage.TIPO.MESSAGE_FROM_SERVER, MessageFactory.TIPO_MENSAJE.WINNER));
-                    game.getPlayer1().sendMessage(MessageFactory.createMessage("", IMessage.TIPO.MESSAGE_FROM_SERVER, MessageFactory.TIPO_MENSAJE.WINNER));
+            if (!(game.getPlayer(0).getClient().isOk() && game.getPlayer(1).getClient().isOk())) {
+                ventanaServer.print("Cerrando el juego de " + game.getPlayer(0).getClient().getId() + " y " + game.getPlayer(1).getClient().getId());
+                if (game.getPlayer(0).getClient().isOk()){
+                    game.getPlayer(0).sendMessage(MessageFactory.createMessage("", IMessage.TIPO.MESSAGE_FROM_SERVER, MessageFactory.TIPO_MENSAJE.SECOND_PLAYER_DESCONECTED));
+                } else if (game.getPlayer(1).getClient().isOk()){
+                    game.getPlayer(1).sendMessage(MessageFactory.createMessage("", IMessage.TIPO.MESSAGE_FROM_SERVER, MessageFactory.TIPO_MENSAJE.SECOND_PLAYER_DESCONECTED));
                 }
                 games.remove(game);
             }

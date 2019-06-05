@@ -25,21 +25,30 @@ import utils.Logger;
 public final class TRIPLEDES extends AbsEncrypter {
     
     private SecretKeySpec secretPrivateKey;
-    Cipher cipher;
+    private Cipher cipher;
+    private boolean ok;
     
     public TRIPLEDES() {
         super();
         try {
             cipher = Cipher.getInstance("DESede/ECB/PKCS5Padding");
+            ok = true;
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
             Logger.Log(ex);
             cipher = null;
+            ok = false;
         }
     }
     
     public TRIPLEDES(String pKey) {
         this();
-        this.makeKeys(pKey);
+        try{
+            this.makeKeys(pKey);
+            ok = true;
+        } catch(Exception ex) {
+            Logger.Log(ex);
+            ok = false;
+        }
     }
  
     @Override
@@ -47,13 +56,14 @@ public final class TRIPLEDES extends AbsEncrypter {
     {
         super.setPrivateKey(pKey);
         secretPrivateKey = new SecretKeySpec(pKey, "DESede");
+        ok = true;
     }
 
     @Override
     public String encrypt(String pStrToEncrypt) {
         try
         {
-            if (cipher != null) {
+            if (ok && cipher != null) {
                 cipher.init(Cipher.ENCRYPT_MODE, secretPrivateKey); //, new IvParameterSpec("12345678".getBytes()));
                 return Base64.getEncoder().encodeToString(cipher.doFinal(pStrToEncrypt.getBytes("UTF-8")));
             }
@@ -62,14 +72,14 @@ public final class TRIPLEDES extends AbsEncrypter {
         {
             Logger.Log(e);
         }
-        return null;
+        return "";
     }
 
     @Override
     public String decrypt(String pStrToDecrypt) {
         try
         {
-            if (cipher != null) {
+            if (ok && cipher != null) {
                 cipher.init(Cipher.DECRYPT_MODE, secretPrivateKey); // , new IvParameterSpec("12345678".getBytes()));
                 return new String(cipher.doFinal(Base64.getDecoder().decode(pStrToDecrypt)));
             }
@@ -78,7 +88,7 @@ public final class TRIPLEDES extends AbsEncrypter {
         {
             Logger.Log(e);
         }
-        return null;
+        return "";
     }
 
     @Override
@@ -91,9 +101,10 @@ public final class TRIPLEDES extends AbsEncrypter {
             super.setPrivateKey(key);
             secretPrivateKey = new SecretKeySpec(key, "DESede");
             this.setPublicKey(generateStupidKeyHex().getBytes());
-        }
-        catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            ok = true;
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             Logger.Log(e);
+            ok = false;
         }
     }
     
