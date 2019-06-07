@@ -8,7 +8,6 @@ package controller.server;
 import static java.lang.Thread.sleep;
 import java.util.LinkedList;
 import model.game.Game;
-import model.game.objects.SpellsBook;
 import model.socketnet.server.ServerSocketThread;
 import model.socketspellsdeck.message.IMessage;
 import model.socketspellsdeck.message.Message;
@@ -105,7 +104,7 @@ public class ServerAdministrator implements IObserver, Runnable {
             ServerSocketThread newClient = (ServerSocketThread)pMessage;
             addClient(newClient);
             newClient.addObserver(this);
-            ventanaServer.print("Nuevo cliente " + newClient.getClient().getId());
+            ventanaServer.print("Nuevo cliente, nombre: " + newClient.getClient().getName() + ", id: " + newClient.getClient().getId());
             if (clients.size() % Constants.NUMBER_OF_PLAYERS == 0) {
                 Game game = new Game(clients.get(clients.size() - 2), clients.getLast());
                 games.add(game);

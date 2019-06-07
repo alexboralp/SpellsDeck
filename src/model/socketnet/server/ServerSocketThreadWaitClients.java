@@ -79,8 +79,12 @@ public class ServerSocketThreadWaitClients extends Observable implements Runnabl
             while (true) {
                 try {
                     Socket socket = serverSocket.accept();
-                    System.out.println(socket.getRemoteSocketAddress().toString());
-                    ServerSocketThread newC = new ServerSocketThread(new Client(socket.getRemoteSocketAddress().toString(), socket));
+                    Logger.Log("ServerSocketThreadWaitClients: Nuevo cliente: " + socket.getRemoteSocketAddress().toString());
+                    Client client = new Client(socket, Client.CREADOR.SERVER);
+                    Logger.Log("ServerSocketThreadWaitClients: Esperando el nombre del nuevo cliente.");
+                    client.setName(client.getIn().readUTF());
+                    Logger.Log("ServerSocketThreadWaitClients: Nombre recibido, creando su escuchador.");
+                    ServerSocketThread newC = new ServerSocketThread(client);
                     Thread newClient = new Thread(newC);
                     newClient.start();
                     this.updateAll(newC);

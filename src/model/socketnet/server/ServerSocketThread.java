@@ -71,6 +71,7 @@ public class ServerSocketThread extends Observable implements Runnable {
         Logger.Log("ServerSocketThread: " + "Enviando un mensaje al cliente");
         try {
             client.getOut().writeObject(pMessage);
+            client.getOut().flush();
         } catch (IOException ex) {
             Logger.Log(ex);
         }

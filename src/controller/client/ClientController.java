@@ -7,7 +7,9 @@ package controller.client;
 
 import java.io.IOException;
 import java.net.Socket;
+import javax.swing.JOptionPane;
 import model.game.objects.Deck;
+import model.socketnet.Client;
 import model.socketnet.client.ClientSocketThread;
 import utils.Constants;
 import utils.Logger;
@@ -59,10 +61,19 @@ public class ClientController {
             Socket socket = new Socket(pHost, pPort);
             
             if (socket.isConnected()) {
+                String nombre;
+                do {
+                    nombre = JOptionPane.showInputDialog(null, "Introduzca su nombre", "Nombre", JOptionPane.PLAIN_MESSAGE);
+                } while ("".equals(nombre));
+                
                 Logger.Log("ClientController: " + "Creando el cliente...");
                 Logger.Log("ClientController: " + "Cliente id: " + socket.getLocalSocketAddress().toString());
-                model.socketnet.Client client = new model.socketnet.Client(socket.getLocalSocketAddress().toString(), socket);
+                model.socketnet.Client client = new model.socketnet.Client(nombre, socket, Client.CREADOR.CLIENT);
                 ClientSocketThread clientSocketThread = new ClientSocketThread(client);
+                
+                Logger.Log("ClientController: " + "Enviando el nombre del cliente al servidor...");
+                client.getOut().writeUTF(nombre);
+                client.getOut().flush();
                 
                 administrator.setClient(clientSocketThread);
                 clientSocketThread.addObserver(administrator);
@@ -80,6 +91,7 @@ public class ClientController {
                         ventanaClient.addObserver(administrator);
                         administrator.setVentanaClient(ventanaClient);
                         ventanaClient.setVisible(true);
+                        ventanaClient.setNewWindowTitle("SpellsDeck  :  " + client.getName());
                     }
                 });
             } else {

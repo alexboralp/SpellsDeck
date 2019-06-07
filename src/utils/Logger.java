@@ -5,22 +5,31 @@
  */
 package utils;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  *
  * @author aborbon
  */
 public class Logger {
     
+    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    
     public static void Log(Exception pEx) {
+        Date date = new Date();
         //pEx.printStackTrace();
-        System.out.println(pEx.getMessage());
+        System.out.println(dateFormat.format(date) + " " + pEx.getMessage());
     }
     
     public static void Log(String pMessage) {
-        System.out.println(pMessage);
+        Date date = new Date();
+        System.out.println(dateFormat.format(date) + " " + pMessage);
     }
     
     public static void Error(String message) {
-        System.err.println(message);
+        Date date = new Date();
+        System.err.println(dateFormat.format(date) + " " + message);
     }
 }

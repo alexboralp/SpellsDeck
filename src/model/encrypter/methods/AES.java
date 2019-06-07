@@ -32,7 +32,7 @@ public final class AES extends AbsEncrypter {
     public AES() {
         super();
         try {
-            cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher = Cipher.getInstance("AES/ECB/NoPadding");
             ok = true;
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
             Logger.Log(ex);

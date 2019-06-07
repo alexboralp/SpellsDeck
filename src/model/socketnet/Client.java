@@ -16,7 +16,14 @@ import utils.Logger;
  * @author alexander
  */
 public class Client {
+    
+    public enum CREADOR {
+        CLIENT,
+        SERVER
+    }
+    
     private String id;
+    private String name;
     private Socket socket;
     
     private ObjectInputStream in;
@@ -24,14 +31,19 @@ public class Client {
     
     private boolean ok;
     
-    public Client(Socket pSocket) {
+    public Client(Socket pSocket, CREADOR pCreador) {
         socket = pSocket;
+        if (pCreador == CREADOR.SERVER) {
+            id = pSocket.getRemoteSocketAddress().toString();
+        } else {
+            id = pSocket.getLocalSocketAddress().toString();
+        }
         ok = startStreams();
     }
     
-    public Client(String pId, Socket pSocket) {
-        this(pSocket);
-        id = pId;
+    public Client(String pName, Socket pSocket, CREADOR pCreador) {
+        this(pSocket, pCreador);
+        name = pName;
     }
     
     private boolean startStreams() {
@@ -84,5 +96,15 @@ public class Client {
     public boolean isOk() {
         return ok && socket.isConnected();
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    
     
 }

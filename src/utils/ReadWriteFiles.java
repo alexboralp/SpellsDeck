@@ -6,7 +6,9 @@
 package utils;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -38,7 +40,6 @@ public class ReadWriteFiles {
             int i = 0;
             while (i < pLineNumber && (line = br.readLine()) != null) {
                 i++;
-                Logger.Log("ReadWriteFile: Línea leída de las keys.txt: " + line);
             }
             Logger.Log("ReadWriteFile: Voy a devolver: " + line);
             return line;
@@ -46,5 +47,22 @@ public class ReadWriteFiles {
             Logger.Log(ex);
         }
         return null;
+    }
+    
+    public static void writeCompleteTxtFile(String pPathFile, String contents) {
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(pPathFile));
+            writer.write(contents);
+        }catch (IOException e) {
+            Logger.Log(e);
+        } finally {
+            try {
+                // Close the writer regardless of what happens...
+                writer.close();
+            } catch (IOException e) {
+                Logger.Log(e);
+            }
+        }
     }
 }

@@ -17,6 +17,7 @@ import model.socketspellsdeck.message.Message;
 import model.socketspellsdeck.message.MessageFactory;
 import utils.Constants;
 import utils.Logger;
+import utils.ReadWriteFiles;
 import utils.Utils;
 import utils.observerpattern.IObserver;
 import vista.player.SpellsDeck;
@@ -27,15 +28,17 @@ import vista.player.SpellsDeck;
  */
 public class ClientAdministrator implements IObserver, Runnable{
     
-    SpellsDeck ventanaClient;
-    ClientSocketThread client;
-    boolean crackedEnemyCards[];
-    boolean crackedMyCards[];
-    int[] myCards;
-    Deck deck;
-    String[] encrypterMethods;
-    Thread gameThread;
+    private SpellsDeck ventanaClient;
+    private ClientSocketThread client;
+    private boolean crackedEnemyCards[];
+    private final boolean crackedMyCards[];
+    private int[] myCards;
+    private Deck deck;
+    private final String[] encrypterMethods;
+    private Thread gameThread;
     private boolean jugar;
+    private String key;
+    private int playedMatches;
     
     public ClientAdministrator() {
         super();
@@ -44,7 +47,7 @@ public class ClientAdministrator implements IObserver, Runnable{
         deck = new Deck();
         ventanaClient = null;
         myCards = new int[Constants.MAX_SELECTED_CARDS_NUMBER];
-        restartCrackedCards();
+        restartGame();
         encrypterMethods = new String[EncrypterFactory.METHOD.values().length];
         // Obtiene todos los métodos como un arreglo de Strings
         int posMethod = 0;
@@ -153,6 +156,7 @@ public class ClientAdministrator implements IObserver, Runnable{
                             Logger.Log("ClientAdministrator: " + "Inicia el juego. Selecciona tres cartas para el juego y da clic en el botón 'A jugar!'");
                             ventanaClient.print(Utils.convertToMultiline("Inicia el juego.\nSelecciona tres cartas\npara el juego y\nda clic en el botón\n'A jugar!'"));
                             jugar = false;
+                            ventanaClient.startClock();
                             break;
                         case START_PLAYING:
                             Logger.Log("ClientAdministrator: " + "Inicia el juego. Tratando de desencriptar las cartas del contrario.");
@@ -162,25 +166,25 @@ public class ClientAdministrator implements IObserver, Runnable{
                             jugar = true;
                             break;
                         case CARD_ENEMY_CRACKED:
-                            if (jugar) {
-                                Logger.Log("ClientAdministrator: " + "Carta del enemigo decodificada.");
-                                ventanaClient.print("Carta decodificada.");
-                                int posEnemy = 0;
-                                while (crackedEnemyCards[posEnemy]) {
-                                    posEnemy++;
-                                }
+                            Logger.Log("ClientAdministrator: " + "Carta del enemigo decodificada.");
+                            ventanaClient.print("Carta decodificada.");
+                            int posEnemy = 0;
+                            while (posEnemy < crackedEnemyCards.length && crackedEnemyCards[posEnemy]) {
+                                posEnemy++;
+                            }
+                            if (posEnemy < crackedEnemyCards.length) {
                                 crackedEnemyCards[posEnemy] = true;
                                 ventanaClient.fadeEnemyCard(posEnemy);
                             }
                             break;
                         case CARD_YOURS_CRACKED:
-                            if (jugar) {
-                                Logger.Log("ClientAdministrator: " + "Carta tuya decodificada.");
-                                ventanaClient.print("Carta decodificada.");
-                                int posMy = 0;
-                                while (crackedMyCards[posMy]) {
-                                    posMy++;
-                                }
+                            Logger.Log("ClientAdministrator: " + "Carta tuya decodificada.");
+                            ventanaClient.print("Carta decodificada.");
+                            int posMy = 0;
+                            while (posMy < crackedMyCards.length && crackedMyCards[posMy]) {
+                                posMy++;
+                            }
+                            if(posMy < crackedMyCards.length) {
                                 crackedMyCards[posMy] = true;
                                 ventanaClient.fadeMyCard(posMy);
                             }
@@ -198,27 +202,31 @@ public class ClientAdministrator implements IObserver, Runnable{
                             break;*/
                         case WIN_ONE_MATCH:
                             Logger.Log("ClientAdministrator: " + "Se ganó la partida.");
-                            ventanaClient.print("Se ganó la partida.\nSelecciona el deck\npara la siguiente\npartida.");
-                            ventanaClient.winMatch();
+                            ventanaClient.print(Utils.convertToMultiline("Se ganó la partida.\nSelecciona el deck\npara la siguiente\npartida."));
+                            ventanaClient.winMatch(playedMatches);
                             gameThread.interrupt();
                             restartGame();
+                            playedMatches++;
                             break;
                         case LOSE_ONE_MATCH:
                             Logger.Log("ClientAdministrator: " + "Se perdió la partida.");
-                            ventanaClient.print("Se perdió la partida.\nSelecciona el deck\npara la siguiente\npartida.");
-                            ventanaClient.loseMatch();
+                            ventanaClient.print(Utils.convertToMultiline("Se perdió la partida.\nSelecciona el deck\npara la siguiente\npartida."));
+                            ventanaClient.loseMatch(playedMatches);
                             gameThread.interrupt();
                             restartGame();
+                            playedMatches++;
                             break;
                         case WINNER:
                             Logger.Log("ClientAdministrator: " + "Eres el ganador, felicidades!");
-                            ventanaClient.print("Eres el ganador,\nfelicidades!");
+                            ventanaClient.print(Utils.convertToMultiline("Eres el ganador,\nfelicidades!"));
                             jugar = false;
+                            playedMatches = 0;
                             break;
                         case LOOSER:
                             Logger.Log("ClientAdministrator: " + "Perdiste el juego.");
                             ventanaClient.print("Perdiste el juego.");
                             jugar = false;
+                            playedMatches = 0;
                             break;
                         case SECOND_PLAYER_DESCONECTED:
                             Logger.Log("ClientAdministrator: " + "Se desconectó el segundo jugador, ¡ganaste el juego!.");
@@ -234,19 +242,23 @@ public class ClientAdministrator implements IObserver, Runnable{
                             break;
         
                     }
-                } else if (message.getMessage() instanceof SpellsBook) {
+                    if (playedMatches >= Constants.TOTAL_WIN_MATCHES) {
+                        playedMatches = Constants.TOTAL_WIN_MATCHES - 1;
+                    }
+                // } else if (message.getMessage() instanceof SpellsBook) {
                     // TODO: Guardar el SpellsBook en un archivo.
                 } else if (message.getMessage() instanceof String) {
                     String messageString = (String)message.getMessage();
                     
                     if (messageString.length() == Constants.KEY_BYTE_LENGTH / 2) {
                         Logger.Log("ClientAdministrator: " + "Se tiene la mitad de la llave.");
-                        ventanaClient.print("Se tiene la mitad de la llave.");
+                        ventanaClient.print(Utils.convertToMultiline("Se tiene la mitad de la llave.\nSelecciona el deck\npara la siguiente\npartida."));
                         ventanaClient.writeKey(messageString);
                     } else {
                         Logger.Log("ClientAdministrator: " + "Se tiene la llave completa.");
-                        ventanaClient.print("Se tiene la llave completa.");
+                        ventanaClient.print(Utils.convertToMultiline("Se tiene la llave completa.\nÚsala sábiamente para\nobtener el conjuro\ny ganar."));
                         ventanaClient.writeKey(messageString);
+                        key = messageString;
                     }
                 } else if (message.getMessage() instanceof Deck) {
                     Logger.Log("ClientAdministrator: " + "Se recibió el deck enemigo.");
@@ -263,7 +275,16 @@ public class ClientAdministrator implements IObserver, Runnable{
                 }
             } else if (message.getTipo() == IMessage.TIPO.MESSAGE_FROM_CLIENT) {
                 Logger.Log("ClientAdministrator: " + "El mensaje viene del cliente");
-                if (message.getMessage() instanceof String) {
+                
+                if (message.getMessage() instanceof MessageFactory.TIPO_MENSAJE) {
+                    switch ((MessageFactory.TIPO_MENSAJE)message.getMessage()) {
+                        case SAVE_FINAL_MESSAGE:
+                            ReadWriteFiles.writeCompleteTxtFile("key.txt", key);
+                            break;
+                        default:
+                            break;
+                    }
+                } else if (message.getMessage() instanceof String) {
                     if (((String)message.getMessage()).contains(MessageFactory.TIPO_MENSAJE.SELECT_DECK.toString())) {
                         myCards = ventanaClient.getSelectedCards();
                         Logger.Log("ClientAdministrator: " + "Mis cartas seleccionadas: " + myCards[0] + ", " + myCards[1] + ", " + myCards[2]);
@@ -300,7 +321,8 @@ public class ClientAdministrator implements IObserver, Runnable{
                     try {
                         enc.setPrivateKey(currentCard.getKey1());
                         enc.setPublicKey(currentCard.getKey2());
-                        if (enc.encrypt(currentCard.getDescription()).equals(currentCard.getEncryptedDescription())) {
+                        if (enc.encrypt(currentCard.getDescription()).equals(currentCard.getEncryptedDescription()) ||
+                               enc.decrypt(currentCard.getEncryptedDescription()).equals(currentCard.getDescription()) ) {
                             Logger.Log("ClientAdministrator: " + "Desencriptado. ");
                             client.sendMessage(MessageFactory.createMessage(client.getClient().getId(), IMessage.TIPO.MESSAGE_FROM_CLIENT, MessageFactory.TIPO_MENSAJE.CARD_ENEMY_CRACKED));
                             cracked = true;
@@ -312,7 +334,8 @@ public class ClientAdministrator implements IObserver, Runnable{
                         if (!cracked) {
                             enc.setPrivateKey(currentCard.getKey2());
                             enc.setPublicKey(currentCard.getKey1());
-                            if (enc.encrypt(currentCard.getDescription()).equals(currentCard.getEncryptedDescription())) {
+                            if (enc.encrypt(currentCard.getDescription()).equals(currentCard.getEncryptedDescription()) ||
+                                    enc.decrypt(currentCard.getEncryptedDescription()).equals(currentCard.getDescription()) ) {
                                 Logger.Log("ClientAdministrator: " + "Desencriptado. ");
                                 client.sendMessage(MessageFactory.createMessage(client.getClient().getId(), IMessage.TIPO.MESSAGE_FROM_CLIENT, MessageFactory.TIPO_MENSAJE.CARD_ENEMY_CRACKED));
                                 cracked = true;
@@ -321,14 +344,26 @@ public class ClientAdministrator implements IObserver, Runnable{
                     }catch(Exception ex) {
                         Logger.Log(ex);
                     }
-                    intentos++;
+                    if (!cracked) {
+                        intentos++;
+                    }
                     startMethod = (startMethod + 1) % encrypterMethods.length;
+                    try {
+                        sleep(Constants.SLEEP_GAME_TIME);
+                    } catch (InterruptedException ex) {
+                        Logger.Log(ex);
+                    }
                     if (!jugar){
                         break;
                     }
                 }
                 if (intentos == encrypterMethods.length) {
                     Logger.Error("ClientAdministrator: " + "No se pudo desencriptar la carta :" + currentCard.getId() + " que tenía el método: " + currentCard.getTipo());
+                }
+                try {
+                    sleep(Constants.SLEEP_GAME_TIME);
+                } catch (InterruptedException ex) {
+                    Logger.Log(ex);
                 }
                 if (!jugar){
                     break;

@@ -28,4 +28,6 @@ public interface Constants {
     public static String STRING_SEPARATOR = ",";
     
     public static int TOTAL_WIN_MATCHES = 2;
+    
+    public static int SLEEP_GAME_TIME = 300;
 }

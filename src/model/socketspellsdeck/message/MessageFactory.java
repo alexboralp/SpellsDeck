@@ -29,7 +29,8 @@ public class MessageFactory{
         WINNER,
         LOOSER,
         SECOND_PLAYER_DESCONECTED,
-        WRONG_NUMBER_OF_CARDS
+        WRONG_NUMBER_OF_CARDS,
+        SAVE_FINAL_MESSAGE
         //RESTART_MATCH
         
         //TWO_PLAYERS_READY,

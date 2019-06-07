@@ -88,19 +88,37 @@ public class Game implements IObserver {
                     case CARD_ENEMY_CRACKED:
                         Logger.Log("Game: " + id + ", carta descifrada por el cliente: " + message.getId());
                         int numPlayer = this.getPlayer(message.getId());
-                        players[numPlayer].sendMessage(MessageFactory.createMessage(message.getId(), IMessage.TIPO.MESSAGE_FROM_SERVER, MessageFactory.TIPO_MENSAJE.CARD_ENEMY_CRACKED));
-                        players[(numPlayer + 1) % 2].sendMessage(MessageFactory.createMessage(message.getId(), IMessage.TIPO.MESSAGE_FROM_SERVER, MessageFactory.TIPO_MENSAJE.CARD_YOURS_CRACKED));
+                        if (winMatches[numPlayer] < Constants.TOTAL_WIN_MATCHES) {
+                            players[numPlayer].sendMessage(MessageFactory.createMessage(message.getId(), IMessage.TIPO.MESSAGE_FROM_SERVER, MessageFactory.TIPO_MENSAJE.CARD_ENEMY_CRACKED));
+                        }
+                        if (winMatches[(numPlayer + 1) % Constants.NUMBER_OF_PLAYERS] < Constants.TOTAL_WIN_MATCHES) {
+                            players[(numPlayer + 1) % 2].sendMessage(MessageFactory.createMessage(message.getId(), IMessage.TIPO.MESSAGE_FROM_SERVER, MessageFactory.TIPO_MENSAJE.CARD_YOURS_CRACKED));
+                        }
                         crackedCards[numPlayer] = crackedCards[numPlayer] + 1;
-                        if (crackedCards[numPlayer] == 2) {
-                            players[numPlayer].sendMessage(MessageFactory.createMessage(message.getId(), IMessage.TIPO.MESSAGE_FROM_SERVER, MessageFactory.TIPO_MENSAJE.WIN_ONE_MATCH));
-                            players[(numPlayer + 1) % 2].sendMessage(MessageFactory.createMessage(message.getId(), IMessage.TIPO.MESSAGE_FROM_SERVER, MessageFactory.TIPO_MENSAJE.LOSE_ONE_MATCH));
+                        if (crackedCards[numPlayer] == Constants.MAX_SELECTED_CARDS_NUMBER) {
+                            if (winMatches[numPlayer] < Constants.TOTAL_WIN_MATCHES) {
+                                players[numPlayer].sendMessage(MessageFactory.createMessage(message.getId(), IMessage.TIPO.MESSAGE_FROM_SERVER, MessageFactory.TIPO_MENSAJE.WIN_ONE_MATCH));
+                            }
+                            if (winMatches[(numPlayer + 1) % Constants.NUMBER_OF_PLAYERS] < Constants.TOTAL_WIN_MATCHES) {
+                                players[(numPlayer + 1) % Constants.NUMBER_OF_PLAYERS].sendMessage(MessageFactory.createMessage(message.getId(), IMessage.TIPO.MESSAGE_FROM_SERVER, MessageFactory.TIPO_MENSAJE.LOSE_ONE_MATCH));
+                            }
                             winMatches[numPlayer] = winMatches[numPlayer] + 1;
                             if (winMatches[numPlayer] == 1) {
                                 players[numPlayer].sendMessage(MessageFactory.createMessage(message.getId(), IMessage.TIPO.MESSAGE_FROM_SERVER, key.substring(0, key.length() / 2)));
-                                restartMatch();
+                                if (winMatches[(numPlayer + 1) % Constants.NUMBER_OF_PLAYERS] < Constants.TOTAL_WIN_MATCHES) {
+                                    restartMatch();
+                                } else {
+                                    restartCrackedCards();
+                                    decks[numPlayer] = null;
+                                }
                             } else if (winMatches[numPlayer] == 2) {
                                 players[numPlayer].sendMessage(MessageFactory.createMessage(message.getId(), IMessage.TIPO.MESSAGE_FROM_SERVER, key));
-                                restartGame();
+                                if (winMatches[(numPlayer + 1) % Constants.NUMBER_OF_PLAYERS] < Constants.TOTAL_WIN_MATCHES) {
+                                    restartCrackedCards();
+                                    decks[(numPlayer + 1) % Constants.NUMBER_OF_PLAYERS] = null;
+                                } else {
+                                    restartGame();
+                                }
                             }
                         }
                         break;
@@ -161,17 +179,23 @@ public class Game implements IObserver {
                 } else if (MessageFactory.TIPO_MENSAJE.FINAL_MESSAGE.toString().equals(instruction)) {
                     Logger.Log("Game: " + id + ", recibí el mensaje final del jugador" + message.getId());
                     int playerPos = getPlayer(message.getId());
-                    String finalMessage = stringTokenizer.nextToken();
+                    String finalMessage = ((String)message.getMessage()).substring(MessageFactory.TIPO_MENSAJE.FINAL_MESSAGE.toString().length() + 1);
                     Logger.Log("Game: " + id + ", mensaje recibido: " + finalMessage);
                     Logger.Log("Game: " + id + ", verificando el mensaje.");
                     IEncrypter enc = EncrypterFactory.getIntance(EncrypterFactory.METHOD.AES.toString());
                     enc.makeKeys(key);
                     String finalMessageDecrypted = enc.decrypt(Base64.getEncoder().encodeToString(spellsBook.getSpell(spellWinNumber)));
+                    Logger.Log("Game: Mensaje final desencriptado: " + finalMessageDecrypted);
                     enc = EncrypterFactory.getIntance(EncrypterFactory.METHOD.SHA256.toString());
                     String finalMessageSHA256 = enc.encrypt(finalMessageDecrypted);
+                    Logger.Log("Game: SHA256 del mensaje final desencriptado: " + finalMessageSHA256);
+                    Logger.Log("Game: Comparando contra: " + Base64.getEncoder().encodeToString(spellsBook.getSpellsSHA256(spellWinNumber)));
+                    
                     if (finalMessageSHA256.equals(Base64.getEncoder().encodeToString(spellsBook.getSpellsSHA256(spellWinNumber)))) {
+                        Logger.Log("Game: Tenemos un ganador: " + players[playerPos].getClient().getName());
                         players[playerPos].sendMessage(MessageFactory.createMessage(message.getId(), IMessage.TIPO.MESSAGE_FROM_SERVER, MessageFactory.TIPO_MENSAJE.WINNER));
                         players[(playerPos + 1) % 2].sendMessage(MessageFactory.createMessage(message.getId(), IMessage.TIPO.MESSAGE_FROM_SERVER, MessageFactory.TIPO_MENSAJE.LOOSER));
+                        
                     }
                 }
                 
@@ -215,17 +239,27 @@ public class Game implements IObserver {
         return 1;
     }
     
-    private void restartMatch() {
+    private void restartDecks() {
         for (int pos = 0; pos < decks.length; pos++) {
             decks[pos] = null;
         }
+    }
+    
+    private void restartCrackedCards() {
         for (int pos = 0; pos < crackedCards.length; pos++) {
             crackedCards[pos] = 0;
         }
     }
     
+    private void restartMatch() {
+        restartDecks();
+        restartCrackedCards();
+        
+    }
+    
     private void restartGame() {
         restartMatch();
+        
         for (int pos = 0; pos < winMatches.length; pos++) {
             winMatches[pos] = 0;
         }
@@ -241,7 +275,4 @@ public class Game implements IObserver {
         Logger.Log("Game: " + id + ", La llave es " + key + ", número de conjuro: " + spellWinNumber);
     }
     
-    /*private void startGame() {
-        // TODO: Game logic
-    }*/
 }
